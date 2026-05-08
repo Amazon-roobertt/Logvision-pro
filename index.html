@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://www.amazon.com.br/favicon.ico">
+    <title>Amazon | LogiVision Pro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root { 
+            --amazon-orange: #ff9900; --amazon-blue: #232f3e; --bg-light: #f3f3f3; 
+            --mnr-header: #000000; --reversa-header: #964b00; --ps-header: #ff0000;
+            --dsl-header: #ff8c00; --lm-header: #00b0f0; --roteirizar-header: #00b050;
+            --divedeep-header: #969696;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-light); font-family: 'Urbanist', sans-serif; min-height: 100vh; position: relative; padding-bottom: 60px; }
+        
+        nav.tab-bar { background: var(--amazon-blue); padding: 0 40px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; }
+        .tab-btn { background: none; border: none; color: #a7acb2; padding: 18px 25px; font-family: inherit; font-weight: 600; cursor: pointer; font-size: 14px; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tab-btn.active { color: #fff; border-bottom-color: var(--amazon-orange); background: rgba(255,255,255,0.05); }
+
+        .container { max-width: 1550px; margin: 30px auto; padding: 0 20px; }
+        .canvas-container { background: #fff; border-radius: 12px; padding: 30px; min-height: 80vh; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        header.internal-header { display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--amazon-orange); padding-bottom: 15px; margin-bottom: 25px; }
+        header img { height: 45px; }
+        header h1 { font-size: 26px; color: #232f3e; font-weight: 700; }
+        
+        .system-content { display: none; }
+        .system-content.active { display: block; }
+        
+        .upload-view { border: 2px dashed var(--amazon-orange); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; background: #fff; margin-bottom: 30px; transition: 0.2s; }
+        .upload-view.file-loaded { border: 2px solid #2e7d32; background: #f0fff4; }
+        .upload-view.file-loaded i { color: #2e7d32; }
+
+        .pivot-card { border: 1px solid #ddd; border-radius: 10px; overflow: hidden; margin-bottom: 30px; background: white; }
+        .pivot-header { background: #232f3e; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th { background: #f6f6f6; padding: 12px; text-align: center; font-size: 11px; border-bottom: 1px solid #ddd; text-transform: uppercase; color: #444; }
+        td { padding: 10px; border: 1px solid #eee; font-size: 13px; font-weight: 600; text-align: center; }
+        .node-cell { font-weight: 700; border-right: 1px solid rgba(0,0,0,0.05); }
+
+        .btn-amazon-rect { background: var(--amazon-orange); color: #000; border: 1px solid #d47f00; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-ui { background: #fff; color: #232f3e; border: 1px solid #ddd; padding: 6px 12px; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+
+        .filter-section { background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 25px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .filter-item { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; }
+        .filter-item.active { background: #FEF8E6; border-color: var(--amazon-orange); color: #c45500; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .comp-file-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #eee; background: #fff; }
+        .remove-btn-comp { color: #cc0c39; cursor: pointer; background: none; border: none; font-size: 18px; }
+
+        .as-handle { cursor: grab; color: #aaa; padding: 0 10px; font-size: 16px; }
+        .as-row-delete { color: #cc0c39; cursor: pointer; font-size: 14px; background: none; border: none; transition: 0.2s; }
+        .autoscrub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-top: 20px; }
+        .as-card { display: flex; flex-direction: column; height: 500px; }
+        .as-wrapper { flex-grow: 1; overflow-y: auto; background: #fff; }
+        tr.dragging { opacity: 0.4; background: #FEF8E6; }
+        
+        .bg-mnr { background: var(--mnr-header); }
+        .bg-reversa { background: var(--reversa-header); }
+        .bg-ps { background: var(--ps-header); }
+        .bg-dsl { background: var(--dsl-header); }
+        .bg-lm { background: var(--lm-header); }
+        .bg-roteirizar { background: var(--roteirizar-header); }
+        .bg-divedeep { background: var(--divedeep-header); }
+
+        .stat-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; border-top: 4px solid var(--amazon-orange); text-align: center; }
+        .val { font-size: 22px; font-weight: 800; display: block; }
+
+        .watermark { position: fixed; bottom: 15px; display: flex; align-items: center; gap: 8px; opacity: 0.7; pointer-events: none; z-index: 5000; }
+        .wm-right { right: 20px; }
+        .wm-left { left: 20px; }
+        .watermark img { height: 20px; }
+        .watermark span { font-size: 13px; font-weight: 800; color: #232f3e; letter-spacing: 1px; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #232f3e; color: #fff; padding: 12px 25px; border-radius: 4px; display: none; z-index: 9999; }
+        textarea { width: 100%; height: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 12px; margin-top: 10px; outline: none; }
+        
+        .origem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 15px; }
+        .origem-card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; }
+    </style>
+</head>
+<body>
+
+<nav class="tab-bar">
+    <button class="tab-btn active" onclick="openTab('general')">General View</button>
+    <button class="tab-btn" onclick="openTab('painel')">Painel de Pendências</button>
+    <button class="tab-btn" onclick="openTab('mnr-tab')">MNR FC/SC & FM</button>
+    <button class="tab-btn" onclick="openTab('ageing-tab')">Ageing System</button>
+    <button class="tab-btn" onclick="openTab('autoscrub-tab')">AutoScrub Pro</button>
+    <button class="tab-btn" onclick="openTab('separador')">Separador TBR</button>
+    <button class="tab-btn" onclick="openTab('compilador')">Compilador</button>
+</nav>
+
+<div class="container">
+    <div class="canvas-container">
+        <div id="general" class="system-content active">
+            <header class="internal-header"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"><h1>General View <span>| Operacional</span></h1></header>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
+                <div id="gv-card-1" class="upload-view" onclick="document.getElementById('gv-in-1').click()"><i class="fa-solid fa-file-csv"></i><h3>1. SCC</h3><p id="gv-txt-1">Selecionar Arquivo</p><input type="file" id="gv-in-1" hidden accept=".xlsx, .xls, .csv"></div>
+                <div id="gv-card-2" class="upload-view" onclick="document.getElementById('gv-in-2').click()"><i class="fa-solid fa-boxes-stacked"></i><h3>2. Total Packages</h3><p id="gv-txt-2">Selecionar Arquivo</p><input type="file" id="gv-in-2" hidden accept=".xlsx, .xls, .csv"></div>
+                <div id="gv-card-3" class="upload-view" onclick="document.getElementById('gv-in-3').click()"><i class="fa-solid fa-chart-line"></i><h3>3. Performance</h3><p id="gv-txt-3">Selecionar Arquivo</p><input type="file" id="gv-in-3" hidden accept=".xlsx, .xls, .csv"></div>
+            </div>
+            <div id="gv-filter-section" style="display:none;" class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR STATUS:</label><div class="checkbox-group" id="gv-filter-group"></div></div>
+            <div id="gv-result-area" style="display: none;">
+                <div class="pivot-card"><div class="pivot-header"><span>Consolidado Operacional</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('gv-table-main', 'GeneralView')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" style="color:red" onclick="clearGeneralView()"><i class="fa-solid fa-trash-can"></i> Limpar</button><button class="btn-ui" onclick="copyTableData('gv-table-main')"><i class="fa-solid fa-copy"></i> Copiar</button></div></div>
+                <table id="gv-table-main"><thead><tr><th style="width:120px; background:#000; color:#fff;">Node</th><th style="background:#000; color:#fff;">Total EAD D-0</th><th style="background:#000; color:#fff;">Pendência de Coleta</th><th style="background:#000; color:#fff;">Potential %</th><th style="background:#000; color:#fff;">EDD Ontime %</th><th style="background:#000; color:#fff;">Total MNR</th></tr></thead><tbody id="gv-body"></tbody></table></div>
+            </div>
+        </div>
+
+        <div id="painel" class="system-content">
+            <header class="internal-header"><h1>Painel de <span>Pendências</span></h1></header>
+            <div id="p-upload-view" class="upload-view" onclick="document.getElementById('input-p').click()"><i class="fa-solid fa-box-open"></i><h2>Processar Relatório</h2><button class="btn-amazon-rect">Escolher Ficheiro</button><input type="file" id="input-p" hidden accept=".xlsx, .xls, .csv"></div>
+            <div id="p-result-view" style="display: none;">
+                <div class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR POR STATUS:</label><div class="checkbox-group" id="p-filter-group"></div></div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:15px; margin-bottom:25px;">
+                    <div class="stat-card">Total<span class="val" id="p-stat-total">0</span></div>
+                    <div class="stat-card">Nodes<span class="val" id="p-stat-nodes">0</span></div>
+                    <div class="stat-card">Hora<span class="val" id="p-stat-time">-</span></div>
+                    <div class="stat-card">Data<span class="val" id="p-stat-date">-</span></div>
+                </div>
+                <div class="pivot-card"><div class="pivot-header"><span>Resumo Consolidado</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('p-consolidated-table', 'Resumo_Painel')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" style="color:red" onclick="clearPainelOnly()"><i class="fa-solid fa-trash-can"></i> Limpar</button><button class="btn-ui" onclick="copyTableData('p-consolidated-table')"><i class="fa-solid fa-copy"></i> Copiar</button></div></div>
+                <table id="p-consolidated-table"><thead><tr><th>Node</th><th>QTD</th><th>%</th></tr></thead><tbody id="p-pivot-body"></tbody></table></div>
+                <div id="p-details-area"></div>
+            </div>
+        </div>
+
+        <div id="mnr-tab" class="system-content">
+            <header class="internal-header"><h1>MNR <span>FC/SC & FM</span></h1></header>
+            <div style="background: #e3f2fd; color: #0d47a1; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: 600;">Essa página atualiza adicionando o arquivo em Painel de Pendências</div>
+            <div id="mnr-results" style="display:none;">
+                <div class="mnr-header">MNR FC/SC</div>
+                <div class="pivot-card"><div class="pivot-header"><span>Tabela MNR FC/SC</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('m-table-fcsc', 'MNR_FCSC')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" onclick="copyTableData('m-table-fcsc')">Copiar</button></div></div>
+                <table id="m-table-fcsc"><thead><tr><th>Node</th><th>Count</th><th>%</th></tr></thead><tbody id="m-body-fcsc"></tbody></table></div>
+                <div class="mnr-header" style="background:#e3f2fd; color:#0d47a1;">MNR FM</div>
+                <div class="pivot-card"><div class="pivot-header" style="background:#0d47a1;"><span>Tabela MNR FM</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('m-table-fm', 'MNR_FM')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" onclick="copyTableData('m-table-fm')">Copiar</button></div></div>
+                <table id="m-table-fm"><thead><tr><th>Node</th><th>Count</th><th>%</th></tr></thead><tbody id="m-body-fm"></tbody></table></div>
+                <div class="mnr-header" style="background:#fff3e0; color:#e65100;">Origem MNR</div><div id="mnr-origem-container" class="origem-grid"></div>
+            </div>
+        </div>
+
+        <div id="ageing-tab" class="system-content">
+            <header class="internal-header"><h1>Ageing <span>System</span></h1></header>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div id="age-card-1" class="upload-view" onclick="document.getElementById('fileAgeing').click()"><strong>1. Arquivo Ageing</strong><input type="file" id="fileAgeing" accept=".xlsx, .xls, .csv" hidden><p id="txt-age-1">Selecionar Arquivo</p></div>
+                <div id="age-card-2" class="upload-view" onclick="document.getElementById('fileSCCAge').click()"><strong>2. Arquivo SCC</strong><input type="file" id="fileSCCAge" accept=".xlsx, .xls, .csv" hidden><p id="txt-age-2">Selecionar Arquivo</p></div>
+            </div>
+            <div id="ageStatus" style="margin-bottom:15px; padding:10px; border-radius:4px; display:none; text-align:center; font-weight:bold;"></div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+                <button class="btn-amazon-rect" onclick="processAgeingFiles()">Processar e Gerar</button>
+                <button class="btn-ui" style="color:red" onclick="clearAgeingOnly()"><i class="fa-solid fa-trash-can"></i> Limpar</button>
+                <button class="btn-ui" id="btnCopyAge" style="display:none;" onclick="copyTableData('resultTableAge')">Copiar Completa</button>
+                <button class="btn-amazon-rect" id="btnExcelAge" style="display:none; background:#067306; border:none;" onclick="exportAgeingToExcel()"><i class="fa-solid fa-file-excel"></i> Extrair Excel</button>
+            </div>
+            <div class="pivot-card" id="ageResDiv" style="display:none; max-height: 600px; overflow: auto;"><table id="resultTableAge"><thead><tr><th>Station</th><th>Tracking ID</th><th>Type</th><th>Age</th><th>State</th><th>Last Update</th><th>User</th><th>City</th><th>Value</th></tr></thead><tbody id="tableBodyAge"></tbody></table></div>
+        </div>
+
+        <div id="autoscrub-tab" class="system-content">
+            <header class="internal-header"><h1>AutoScrub <span>| Análise Status TBR</span></h1></header>
+            <div id="as-upload-section"><div class="upload-view" onclick="document.getElementById('scrubFile').click()"><i class="fa-solid fa-magnifying-glass-chart"></i><h2>Processar Novo Relatório</h2><p>Clique para selecionar o arquivo</p><input type="file" id="scrubFile" hidden accept=".xlsx, .xls, .csv"></div></div>
+            <div id="as-results-section" style="display:none;">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><button class="btn-amazon-rect" style="background:#cc0c39; color:#fff; border:none" onclick="as_resetScrub()"><i class="fa-solid fa-trash-can"></i> LIMPAR INFORMAÇÃO</button><div style="font-weight: 800; color: var(--amazon-blue);" id="as-fileNameDisplay"></div></div>
+                <div class="autoscrub-grid" id="autoscrubGrid"></div>
+            </div>
+        </div>
+
+        <div id="separador" class="system-content"><header class="internal-header"><h1>Separador TBR</h1></header><div class="upload-view" onclick="document.getElementById('input-s').click()"><i class="fa-solid fa-arrows-split-up-and-left"></i><h2>Processar Novo Lote</h2><p>Extração automática de todas as células iniciadas com "TBR"</p><input type="file" id="input-s" hidden accept=".xlsx, .xls, .csv"></div><div id="s-results"></div></div>
+        
+        <div id="compilador" class="system-content">
+            <header class="internal-header"><h1>Compilador</h1></header>
+            <div class="upload-view" onclick="document.getElementById('fileInputComp').click()"><i class="fa-solid fa-file-circle-plus"></i><h2>Selecionar Arquivos</h2><input type="file" id="fileInputComp" multiple hidden accept=".xlsx, .xls, .csv"></div>
+            <div id="compFileListContainer" class="pivot-card" style="display:none; height:auto;">
+                <div class="pivot-header"><span>Arquivos Pendentes</span><button class="btn-ui" style="color:red" onclick="clearCompFiles()"><i class="fa-solid fa-trash-can"></i> Limpar Tudo</button></div>
+                <div id="compFileListBody"></div>
+                <div style="padding:20px; text-align:center"><button class="btn-amazon-rect" id="btnRunCompile">Compilar e Baixar</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="watermark wm-left"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"><span>@ROOBERTT</span></div>
+<div class="watermark wm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"><span>@ROOBERTT</span></div>
+<div id="toast">Ação concluída!</div>
+
+<script>
+    function openTab(id) {
+        document.querySelectorAll('.system-content, .tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(id));
+        if(activeBtn) activeBtn.classList.add('active');
+    }
+
+    async function takeScreenshot(divId, filename) {
+        const element = document.getElementById(divId);
+        const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#ffffff" });
+        const link = document.createElement("a"); link.download = `${filename}_${new Date().getTime()}.png`;
+        link.href = canvas.toDataURL("image/png"); link.click(); showToast("Imagem gerada!");
+    }
+
+    function formatExcelDate(val) {
+        if (!val) return "-";
+        if (typeof val === 'number') {
+            let date = new Date((val - 25569) * 86400 * 1000);
+            return date.toLocaleString('pt-BR');
+        }
+        return val;
+    }
+
+    function showToast(m) {
+        const t = document.getElementById('toast'); t.innerText = m; t.style.display='block';
+        setTimeout(() => t.style.display='none', 2000);
+    }
+
+    function copyTableData(id) { 
+        let t = ""; const table = document.getElementById(id); if(!table) return; 
+        table.querySelectorAll('tr').forEach(r => { t += Array.from(r.querySelectorAll('th, td')).map(c => c.innerText).join('\t') + '\n'; }); 
+        copyT(t); 
+    }
+
+    function copyT(t) {
+        const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el);
+        el.select(); document.execCommand('copy'); document.body.removeChild(el); showToast("Copiado!");
+    }
+
+    const STATUS_MNR_OFFICIAL = ["ARRIVED", "IN TRANSIT", "IN TRANSIT (CUSTOMER -> DS)", "IN TRANSIT (DS -> DS)", "IN TRANSIT (DS -> FC)", "IN TRANSIT (FC -> DS)", "MANIFESTED (FC -> DS)", "PICKUP FAILED", "RECEIVED", "STOWED"];
+
+    // --- GENERAL VIEW ---
+    let GV_RAW = { scc: null, total: null, perf: null };
+    let GV_ACTIVE_FILTERS = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS"];
+    document.getElementById('gv-in-1').addEventListener('change', e => loadGV(e, 'scc'));
+    document.getElementById('gv-in-2').addEventListener('change', e => loadGV(e, 'total'));
+    document.getElementById('gv-in-3').addEventListener('change', e => loadGV(e, 'perf'));
+
+    function loadGV(e, type) {
+        const reader = new FileReader();
+        reader.onload = (ex) => {
+            const wb = XLSX.read(new Uint8Array(ex.target.result), {type:'array'});
+            GV_RAW[type] = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1, defval: ""});
+            const map = { scc: 1, total: 2, perf: 3 };
+            document.getElementById(`gv-card-${map[type]}`).classList.add('file-loaded');
+            document.getElementById(`gv-txt-${map[type]}`).innerText = '✓ Carregado';
+            if(type === 'scc') initGVFilters();
+            if(GV_RAW.scc && GV_RAW.total && GV_RAW.perf) processGeneral();
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+    }
+
+    function initGVFilters() {
+        const group = document.getElementById('gv-filter-group'); group.innerHTML = "";
+        const sccHeaders = GV_RAW.scc[0];
+        const idxState = sccHeaders.findIndex(h => /state|status/i.test(h));
+        const statuses = [...new Set(GV_RAW.scc.slice(1).map(r => String(r[idxState]||"").toUpperCase().trim()))].filter(Boolean).sort();
+        statuses.forEach(s => {
+            const isActive = GV_ACTIVE_FILTERS.includes(s);
+            const label = document.createElement('label'); label.className = `filter-item ${isActive?'active':''}`;
+            label.innerHTML = `<input type="checkbox" hidden value="${s}" ${isActive?'checked':''}> ${s}`;
+            label.onclick = function() {
+                const cb = this.querySelector('input'); cb.checked = !cb.checked; this.classList.toggle('active', cb.checked);
+                GV_ACTIVE_FILTERS = Array.from(group.querySelectorAll('input:checked')).map(i => i.value);
+                processGeneral();
+            };
+            group.appendChild(label);
+        });
+        document.getElementById('gv-filter-section').style.display = 'block';
+    }
+
+    function processGeneral() {
+        const nodes = {}; const sccData = GV_RAW.scc; const sccHeaders = sccData[0];
+        const idxStation = sccHeaders.findIndex(h => /station|node/i.test(h));
+        const idxState = sccHeaders.findIndex(h => /state|status/i.test(h));
+        for(let i=1; i < sccData.length; i++) {
+            let row = sccData[i]; let st = String(row[idxStation] || "").trim().toUpperCase();
+            let state = String(row[idxState] || "").toUpperCase().trim();
+            if(!st || st.startsWith('D') || st.startsWith('E')) continue;
+            if(!nodes[st]) nodes[st] = { ead: 0, pen: 0, pot: 0, ont: 0, mnr: 0 };
+            if(GV_ACTIVE_FILTERS.includes(state)) nodes[st].pen++;
+            if(STATUS_MNR_OFFICIAL.includes(state)) nodes[st].mnr++;
+        }
+        GV_RAW.total.forEach(r => { let n = String(r[0]||"").toUpperCase(); if(nodes[n]) nodes[n].ead = parseFloat(r[1])||0; });
+        GV_RAW.perf.forEach(r => { let n = String(r[0]||"").toUpperCase(); if(nodes[n]) { nodes[n].ont = parseFloat(r[1])||0; nodes[n].pot = parseFloat(r[3])||0; } });
+        document.getElementById('gv-body').innerHTML = Object.keys(nodes).sort((a,b) => nodes[b].pen - nodes[a].pen).map(n => {
+            const d = nodes[n];
+            return `<tr><td class="node-cell">${n}</td><td>${d.ead.toLocaleString('pt-BR')}</td><td style="background:${d.pen > 30 ? 'rgba(248,113,113,0.5)' : 'rgba(74,222,128,0.5)'}">${d.pen}</td><td>${d.pot.toFixed(2)}%</td><td>${d.ont.toFixed(2)}%</td><td>${d.mnr}</td></tr>`;
+        }).join('');
+        document.getElementById('gv-result-area').style.display = 'block';
+    }
+
+    function clearGeneralView() {
+        GV_RAW = { scc: null, total: null, perf: null };
+        document.getElementById('gv-result-area').style.display = 'none';
+        document.getElementById('gv-filter-section').style.display = 'none';
+        [1,2,3].forEach(i => {
+            const card = document.getElementById(`gv-card-${i}`);
+            card.classList.remove('file-loaded');
+            document.getElementById(`gv-txt-${i}`).innerText = 'Selecionar Arquivo';
+            document.getElementById(`gv-in-${i}`).value = ""; 
+        });
+    }
+
+    // --- PAINEL PENDENCIAS ---
+    let p_raw = [], p_active_filters = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS"];
+    let col_p = { st: "Station", state: "State", rota: "Rota", update: "Last Update", user: "Last Scan By", cep: "Postal" };
+    document.getElementById('input-p').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = (ex) => {
+            p_raw = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(ex.target.result), {type:'array'}).Sheets[XLSX.read(new Uint8Array(ex.target.result), {type:'array'}).SheetNames[0]], {defval: ""});
+            if(p_raw.length > 0) {
+                const keys = Object.keys(p_raw[0]);
+                col_p.st = keys.find(k => /station|node/i.test(k)) || "Station";
+                col_p.state = keys.find(k => /state|status/i.test(k)) || "State";
+                col_p.rota = keys.find(k => /rota|route/i.test(k)) || "Rota";
+                col_p.update = keys.find(k => /update|time/i.test(k)) || "Last Update";
+                col_p.user = keys.find(k => /last scan by|usuario/i.test(k)) || "Last Scan By";
+                col_p.cep = keys.find(k => /postal|cep/i.test(k)) || "Postal";
+                initPFilters(); renderPainel();
+            }
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+    });
+
+    function initPFilters() {
+        const group = document.getElementById('p-filter-group'); group.innerHTML = "";
+        const statuses = [...new Set(p_raw.map(r => String(r[col_p.state]||"").toUpperCase().trim()))].filter(Boolean).sort();
+        statuses.forEach(s => {
+            const isActive = p_active_filters.includes(s);
+            const label = document.createElement('label'); label.className = `filter-item ${isActive?'active':''}`;
+            label.innerHTML = `<input type="checkbox" hidden value="${s}" ${isActive?'checked':''}> ${s}`;
+            label.onclick = function() {
+                const cb = this.querySelector('input'); cb.checked = !cb.checked; this.classList.toggle('active', cb.checked);
+                p_active_filters = Array.from(group.querySelectorAll('input:checked')).map(i => i.value);
+                renderPainel();
+            };
+            group.appendChild(label);
+        });
+    }
+
+    function renderPainel() {
+        const filtered = p_raw.filter(r => {
+            const st = String(r[col_p.st] || "").trim().toUpperCase();
+            return p_active_filters.includes(String(r[col_p.state]||"").toUpperCase().trim()) && !st.startsWith('D') && !st.startsWith('E');
+        });
+        const nodes = {}; filtered.forEach(r => { const n = r[col_p.st] || "N/A"; if(!nodes[n]) nodes[n] = []; nodes[n].push(r); });
+        const sortedKeys = Object.keys(nodes).sort((a,b) => nodes[b].length - nodes[a].length);
+        document.getElementById('p-pivot-body').innerHTML = sortedKeys.map(n => {
+            const c = nodes[n].length; const bg = c > 30 ? 'rgba(248, 113, 113, 0.5)' : 'rgba(74, 222, 128, 0.5)';
+            return `<tr style="background:${bg}"><td class="node-cell">${n}</td><td>${c}</td><td>${((c/filtered.length)*100).toFixed(1)}%</td></tr>`;
+        }).join('');
+        document.getElementById('p-stat-total').innerText = filtered.length;
+        document.getElementById('p-stat-nodes').innerText = sortedKeys.length;
+        document.getElementById('p-stat-time').innerText = new Date().toLocaleTimeString();
+        document.getElementById('p-stat-date').innerText = new Date().toLocaleDateString();
+        document.getElementById('p-details-area').innerHTML = sortedKeys.map(n => {
+            const items = nodes[n].sort((a, b) => String(a["City"] || "").localeCompare(String(b["City"] || "")));
+            return `<div class="pivot-card" style="height:auto;"><div class="pivot-header"><span>${n} (${nodes[n].length})</span><button onclick="copyTableData('det-${n}')" class="btn-ui">Copiar Node</button></div>
+            <div style="max-height:300px; overflow:auto;"><table id="det-${n}"><thead><tr><th>Tracking ID</th><th>Rota</th><th>CEP</th><th>Cidade</th><th>Last Update</th><th>Usuario</th></tr></thead><tbody>
+            ${items.map(p => `<tr><td>${p["Tracking ID"]||""}</td><td>${p[col_p.rota]||""}</td><td>${p[col_p.cep]||""}</td><td>${p["City"]||""}</td><td>${formatExcelDate(p[col_p.update])}</td><td>${p[col_p.user]||"-"}</td></tr>`).join('')}
+            </tbody></table></div></div>`;
+        }).join('');
+        document.getElementById('p-upload-view').style.display='none'; document.getElementById('p-result-view').style.display='block';
+        renderMNR();
+    }
+
+    function renderMNR() {
+        let c_fcsc = {}, c_fm = {}, c_origem = {}, t_fcsc = 0, t_fm = 0;
+        p_raw.forEach(r => {
+            const s = String(r[col_p.state]||"").toUpperCase().trim();
+            const n = String(r[col_p.st] || "N/A").trim().toUpperCase();
+            if(!n || n.startsWith('D') || n.startsWith('E')) return;
+            if(STATUS_MNR_OFFICIAL.includes(s)) {
+                if(/STD EZ/.test(String(r["Ship Option"]||"").toUpperCase())) { c_fm[n] = (c_fm[n]||0)+1; t_fm++; }
+                else { c_fcsc[n] = (c_fcsc[n]||0)+1; t_fcsc++; }
+                const wh = String(r["Warehouse"] || "N/A").trim().toUpperCase();
+                if(!c_origem[n]) c_origem[n] = { warehouses: {}, total: 0 };
+                c_origem[n].warehouses[wh] = (c_origem[n].warehouses[wh] || 0) + 1; c_origem[n].total++;
+            }
+        });
+        const bld = (obj, total) => Object.keys(obj).sort((a,b)=>obj[b]-obj[a]).map(n => `<tr><td>${n}</td><td>${obj[n]}</td><td>${((obj[n]/total)*100).toFixed(1)}%</td></tr>`).join('');
+        document.getElementById('m-body-fcsc').innerHTML = bld(c_fcsc, t_fcsc || 1);
+        document.getElementById('m-body-fm').innerHTML = bld(c_fm, t_fm || 1);
+        const container = document.getElementById('mnr-origem-container'); container.innerHTML = "";
+        Object.keys(c_origem).sort((a,b) => c_origem[b].total - c_origem[a].total).forEach(st => {
+            const d = c_origem[st]; const sortedWh = Object.keys(d.warehouses).sort((a,b) => d.warehouses[b] - d.warehouses[a]);
+            container.innerHTML += `<div class="origem-card"><div class="pivot-header"><h4>${st} (${d.total})</h4><button class="btn-ui" onclick="copyTableData('tbl-orig-${st}')">Copiar</button></div>
+            <table id="tbl-orig-${st}"><thead><tr><th>Warehouse</th><th>QTD</th></tr></thead><tbody>${sortedWh.map(wh => `<tr><td>${wh}</td><td>${d.warehouses[wh]}</td></tr>`).join('')}</tbody></table></div>`;
+        });
+        document.getElementById('mnr-results').style.display = 'block';
+    }
+
+    function clearPainelOnly() { p_raw = []; document.getElementById('p-upload-view').style.display = 'block'; document.getElementById('p-result-view').style.display = 'none'; document.getElementById('mnr-results').style.display = 'none'; document.getElementById('input-p').value = ""; }
+
+    // --- AGEING SYSTEM ---
+    let age_data = [];
+    document.getElementById('fileAgeing').onchange = () => { document.getElementById('age-card-1').classList.add('file-loaded'); document.getElementById('txt-age-1').innerText = '✓ Carregado'; };
+    document.getElementById('fileSCCAge').onchange = () => { document.getElementById('age-card-2').classList.add('file-loaded'); document.getElementById('txt-age-2').innerText = '✓ Carregado'; };
+    async function processAgeingFiles() {
+        const f1 = document.getElementById('fileAgeing').files[0]; const f2 = document.getElementById('fileSCCAge').files[0];
+        if(!f1 || !f2) return;
+        const d1 = await as_readExcel(f1); const d2 = await as_readExcel(f2);
+        const lookup = {}; d2.forEach(r => { const id = r['tracking_id'] || r['Tracking ID']; if(id) lookup[String(id).trim()] = r; });
+        age_data = d1.map(r => {
+            const id = String(r['tracking_id'] || r['Tracking ID'] || '').trim(); const m = lookup[id] || {};
+            return { "Station": r['delivery_station_code'], "Tracking ID": id, "Type": r['snapshot_type'], "Age": r['age'], "State": m['State']||'-', "Last Update": formatExcelDate(m['Last Updated Time']), "User": m['Last Scan By']||'-', "City": m['City']||'-', "Value": parseFloat(m['Order Amount']||0).toFixed(2) };
+        });
+        document.getElementById('tableBodyAge').innerHTML = age_data.map(i => `<tr><td>${i.Station}</td><td>${i["Tracking ID"]}</td><td>${i.Type}</td><td>${i.Age}</td><td>${i.State}</td><td>${i["Last Update"]}</td><td>${i.User}</td><td>${i.City}</td><td>${i.Value}</td></tr>`).join('');
+        document.getElementById('ageResDiv').style.display = 'block'; document.getElementById('btnCopyAge').style.display = 'inline-block'; document.getElementById('btnExcelAge').style.display = 'inline-block';
+    }
+    function clearAgeingOnly() { age_data = []; document.getElementById('ageResDiv').style.display = 'none'; document.getElementById('btnCopyAge').style.display = 'none'; document.getElementById('btnExcelAge').style.display = 'none'; document.getElementById('fileAgeing').value = ""; document.getElementById('fileSCCAge').value = ""; document.getElementById('age-card-1').classList.remove('file-loaded'); document.getElementById('age-card-2').classList.remove('file-loaded'); document.getElementById('txt-age-1').innerText = "Selecionar Arquivo"; document.getElementById('txt-age-2').innerText = "Selecionar Arquivo"; }
+    function exportAgeingToExcel() { const ws = XLSX.utils.json_to_sheet(age_data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Ageing"); XLSX.writeFile(wb, "Ageing_Amazon.xlsx"); }
+
+    // --- AUTOSCRUB (VBA FAITHFUL LOGIC) ---
+    let as_draggedRow = null;
+    function as_formatDateTimeBR(val) {
+        if (!val || val === 'N/A') return 'N/A';
+        let d = (typeof val === 'number') ? new Date((val - 25569) * 86400 * 1000) : new Date(val);
+        if (isNaN(d.getTime())) return val;
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function as_resetScrub() { if(confirm("Limpar dados?")) { document.getElementById('as-results-section').style.display = 'none'; document.getElementById('as-upload-section').style.display = 'block'; document.getElementById('scrubFile').value = ""; document.getElementById('autoscrubGrid').innerHTML = ""; } }
+    document.getElementById('scrubFile').addEventListener('change', function(e) {
+        const file = e.target.files[0]; if (!file) return;
+        document.getElementById('as-fileNameDisplay').innerText = `Arquivo: ${file.name}`;
+        const reader = new FileReader();
+        reader.onload = (ex) => {
+            const data = new Uint8Array(ex.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            as_processScrubData(jsonData);
+        }; reader.readAsArrayBuffer(file);
+    });
+    function as_processScrubData(data) {
+        const cats = { mnr: [], reversa: [], ps: [], dsl: [], lm: [], roteirizar: [], divedeep: [] };
+        data.forEach(row => {
+            const tbr = row['Tracking ID'] || row['tracking_id'] || 'N/A';
+            const station = row['Station'] || row['station'] || row['Node'] || row['node'] || 'N/A';
+            const state = String(row['State'] || row['state'] || '').trim();
+            const reason = String(row['Reason'] || row['reason'] || '').trim();
+            const reasonL = reason.toLowerCase();
+            const ship = String(row['Ship Method'] || row['ship_method'] || '').toLowerCase();
+            const date = as_formatDateTimeBR(row['Last Updated Time'] || row['last_updated_time']);
+
+            if (!state.toLowerCase().includes('delivered') && !reasonL.includes('delivered to customer')) {
+                // Hierarquia baseada no Select Case do VBA
+                if (reasonL === "paperwork received" || reasonL === "arrived" || reasonL === "manifested" || reasonL === "shipment not ready" || 
+                    (reasonL === "tr canceled" && ship !== "ats_returns_br") || 
+                    state.toLowerCase() === "in transit (fc -> ds)" || state.toLowerCase() === "in transit (dc -> ds)" || state.toLowerCase() === "in transit (ds -> ds)" ||
+                    (reason === "" && state.toLowerCase() === "arrived" && (ship === "std ez local" || ship === "std ez national" || ship === "std ez regional"))) {
+                    cats.mnr.push({tbr, station, info: row['Source'] || row['source'] || state, date});
+                }
+                else if (reasonL === "tr canceled" && ship === "ats_returns_br") {
+                    cats.roteirizar.push({tbr, station, info: "TR Canceled - Returns", date});
+                }
+                else if ((reason === "" || reasonL === "none" || reasonL === "other") && state === "In Transit (DS -> FC)") {
+                    cats.reversa.push({tbr, station, info: state, date});
+                }
+                else if (reasonL === "damaged" || reasonL === "damaged fc return" || reasonL === "customer canceled" || reasonL === "held" || reasonL === "customer cancellation" || reasonL === "wrong node") {
+                    cats.ps.push({tbr, station, info: reason, date});
+                }
+                else if (reasonL.includes("address not found") || reasonL.includes("customer not found") || reasonL.includes("moved")) {
+                    cats.dsl.push({tbr, station, info: reason, date});
+                }
+                else if ((reason === "" || reasonL === "none" || reasonL === "other") && state === "In Transit (DS -> Customer)") {
+                    cats.lm.push({tbr, station, info: state, date});
+                }
+                else if ((reason === "" && state.toLowerCase().includes("induct")) || reason === "Inaccessible Delivery Location" || (reasonL === "business closed" && state.toLowerCase() === "delivery failed") || reasonL.includes("delivery failed") || reasonL.includes("customer unavailable")) {
+                    cats.roteirizar.push({tbr, station, info: reason || "Induct", date});
+                }
+                else {
+                    cats.divedeep.push({tbr, station, info: reason || state, date});
+                }
+            }
+        });
+        as_renderScrubGrid(cats);
+    }
+    function as_renderScrubGrid(cats) {
+        const grid = document.getElementById('autoscrubGrid'); grid.innerHTML = '';
+        document.getElementById('as-upload-section').style.display = 'none'; document.getElementById('as-results-section').style.display = 'block';
+        const configs = [
+            { id: 'divedeep', title: 'DIVE DEEP', data: cats.divedeep, color: 'bg-divedeep', colLabel: 'Info' },
+            { id: 'roteirizar', title: 'ROTEIRIZAR', data: cats.roteirizar, color: 'bg-roteirizar', colLabel: 'Status' },
+            { id: 'ps', title: 'PS / STOW', data: cats.ps, color: 'bg-ps', colLabel: 'Status' },
+            { id: 'reversa', title: 'ROTA REVERSA', data: cats.reversa, color: 'bg-reversa', colLabel: 'Status' },
+            { id: 'mnr', title: 'MNR', data: cats.mnr, color: 'bg-mnr', colLabel: 'Source' },
+            { id: 'dsl', title: 'ACIONAR DSL', data: cats.dsl, color: 'bg-dsl', colLabel: 'Status' },
+            { id: 'lm', title: 'LAST MILE', data: cats.lm, color: 'bg-lm', colLabel: 'Status' }
+        ];
+        configs.forEach(conf => {
+            const card = document.createElement('div'); card.className = 'pivot-card as-card';
+            card.innerHTML = `<div class="pivot-header ${conf.color}"><span>${conf.title} (<span id="as-cnt-${conf.id}">${conf.data.length}</span>)</span><button class="btn-ui" onclick="copyTableData('as-tbl-${conf.id}')"><i class="fa-solid fa-copy"></i></button></div>
+                <div class="as-wrapper" ondragover="event.preventDefault()" ondrop="as_dropRow(event, '${conf.id}')">
+                <table id="as-tbl-${conf.id}"><thead><tr><th><i class="fa-solid fa-grip-vertical"></i></th><th>Station</th><th>TBR</th><th>${conf.colLabel}</th><th>Data</th><th><i class="fa-solid fa-trash-can"></i></th></tr></thead><tbody id="as-body-${conf.id}">
+                ${conf.data.map((item, idx) => `<tr id="as-row-${conf.id}-${idx}"><td><div class="as-handle" draggable="true" ondragstart="as_dragStart(event)"><i class="fa-solid fa-grip-vertical"></i></div></td><td>${item.station}</td><td>${item.tbr}</td><td>${item.info}</td><td>${item.date}</td><td><button class="as-row-delete" onclick="as_deleteRow(this, '${conf.id}')"><i class="fa-solid fa-trash-can"></i></button></td></tr>`).join('')}
+                </tbody></table></div>`;
+            grid.appendChild(card);
+        });
+    }
+    function as_dragStart(e) { as_draggedRow = e.target.closest('tr'); as_draggedRow.classList.add('dragging'); }
+    function as_dropRow(e, targetId) { e.preventDefault(); if(!as_draggedRow) return; as_draggedRow.classList.remove('dragging'); document.getElementById(`as-body-${targetId}`).appendChild(as_draggedRow); as_updateCount(); }
+    function as_deleteRow(btn, id) { if(confirm("Remover linha?")) { btn.closest('tr').remove(); as_updateCount(); } }
+    function as_updateCount() { ['mnr', 'reversa', 'ps', 'dsl', 'lm', 'roteirizar', 'divedeep'].forEach(id => { const b = document.getElementById(`as-body-${id}`); if(b) document.getElementById(`as-cnt-${id}`).innerText = b.children.length; }); }
+
+    // --- SEPARADOR TBR ---
+    document.getElementById('input-s').onchange = (e) => {
+        const r = new FileReader(); r.onload = (ex) => {
+            const wb = XLSX.read(new Uint8Array(ex.target.result), {type:'array'});
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(ws, {header: 1});
+            let allTbrs = [];
+            jsonData.forEach(row => {
+                row.forEach(cell => {
+                    const val = String(cell || "").trim();
+                    if(val.toUpperCase().startsWith("TBR")) allTbrs.push(val);
+                });
+            });
+            let h = ""; for(let i=0; i<allTbrs.length; i+=5000) {
+                const chunk = allTbrs.slice(i, i+5000);
+                h += `<div class="pivot-card" style="border-top: 4px solid var(--amazon-orange); height:auto; margin-bottom:20px;">
+                    <div class="pivot-header" style="background:#fff; color:#333; border-bottom:1px solid #eee;"><span>Lote ${(i/5000)+1} (${chunk.length})</span><button class="btn-amazon-rect" style="padding:4px 12px; font-size:11px" onclick="copyT('${chunk.join('\\n')}')">Copiar</button></div>
+                    <div style="padding:15px"><textarea readonly style="height:100px; margin:0">${chunk.join('\n')}</textarea></div></div>`;
+            }
+            document.getElementById('s-results').innerHTML = h;
+        }; r.readAsArrayBuffer(e.target.files[0]);
+    };
+
+    // --- COMPILADOR ---
+    let comp_files = [];
+    document.getElementById('fileInputComp').onchange = (e) => { comp_files = [...comp_files, ...Array.from(e.target.files)]; renderCompUI(); };
+    function renderCompUI() {
+        const container = document.getElementById('compFileListContainer'); container.style.display = comp_files.length ? 'block' : 'none';
+        document.getElementById('compFileListBody').innerHTML = comp_files.map((f, i) => `<div class="comp-file-item"><span>${i+1}. ${f.name}</span><button class="remove-btn-comp" onclick="removeCompFile(${i})"><i class="fa-solid fa-trash-can"></i></button></div>`).join('');
+    }
+    function removeCompFile(idx) { comp_files.splice(idx, 1); renderCompUI(); }
+    function clearCompFiles() { comp_files = []; renderCompUI(); }
+    document.getElementById('btnRunCompile').onclick = async () => {
+        let final = [];
+        for(let i=0; i<comp_files.length; i++) {
+            const wb = XLSX.read(await comp_files[i].arrayBuffer(), {type:'array'});
+            let rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
+            const fmt = rows.map(r => { const nr = r.slice(0, 52); while(nr.length < 52) nr.push(""); return nr; });
+            if(i === 0) final = fmt; else if(fmt.length > 1) final = final.concat(fmt.slice(1));
+        }
+        XLSX.writeFile({SheetNames:["Comp"], Sheets:{Comp:XLSX.utils.aoa_to_sheet(final)}}, `Compilado.xlsx`);
+    };
+
+    function as_readExcel(f) { return new Promise(res => { const r = new FileReader(); r.onload = e => res(XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type:'array'}).SheetNames[0]])); r.readAsArrayBuffer(f); }); }
+    function copyGVData() { 
+        let t = "Node\tTotal EAD\tPen\tPot\tOntime\tMNR\n"; 
+        document.querySelectorAll('#gv-body tr').forEach(r => { t += Array.from(r.children).map(td => td.innerText).join('\t') + '\n'; }); 
+        copyT(t);
+    }
+</script>
+</body>
+</html>
