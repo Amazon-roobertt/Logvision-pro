@@ -106,7 +106,10 @@
 <div class="container">
     <div class="canvas-container">
         <div id="general" class="system-content active">
-            <header class="internal-header"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"><h1>General View <span>| Operacional</span></h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>General View <span>| Operacional</span></h1>
+            </header>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
                 <div id="gv-card-1" class="upload-view" onclick="document.getElementById('gv-in-1').click()"><i class="fa-solid fa-file-csv"></i><h3>1. SCC</h3><p id="gv-txt-1">Selecionar Arquivo</p><input type="file" id="gv-in-1" hidden accept=".xlsx, .xls, .csv"></div>
                 <div id="gv-card-2" class="upload-view" onclick="document.getElementById('gv-in-2').click()"><i class="fa-solid fa-boxes-stacked"></i><h3>2. Total Packages</h3><p id="gv-txt-2">Selecionar Arquivo</p><input type="file" id="gv-in-2" hidden accept=".xlsx, .xls, .csv"></div>
@@ -120,7 +123,10 @@
         </div>
 
         <div id="painel" class="system-content">
-            <header class="internal-header"><h1>Painel de <span>Pendências</span></h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>Painel de <span>Pendências</span></h1>
+            </header>
             <div id="p-upload-view" class="upload-view" onclick="document.getElementById('input-p').click()"><i class="fa-solid fa-box-open"></i><h2>Processar Relatório</h2><button class="btn-amazon-rect">Escolher Ficheiro</button><input type="file" id="input-p" hidden accept=".xlsx, .xls, .csv"></div>
             <div id="p-result-view" style="display: none;">
                 <div class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR POR STATUS:</label><div class="checkbox-group" id="p-filter-group"></div></div>
@@ -137,7 +143,10 @@
         </div>
 
         <div id="mnr-tab" class="system-content">
-            <header class="internal-header"><h1>MNR <span>FC/SC & FM</span></h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>MNR <span>FC/SC & FM</span></h1>
+            </header>
             <div style="background: #e3f2fd; color: #0d47a1; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: 600;">Essa página atualiza adicionando o arquivo em Painel de Pendências</div>
             <div id="mnr-results" style="display:none;">
                 <div class="mnr-header">MNR FC/SC</div>
@@ -151,7 +160,10 @@
         </div>
 
         <div id="ageing-tab" class="system-content">
-            <header class="internal-header"><h1>Ageing <span>System</span></h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>Ageing <span>System</span></h1>
+            </header>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
                 <div id="age-card-1" class="upload-view" onclick="document.getElementById('fileAgeing').click()"><strong>1. Arquivo Ageing</strong><input type="file" id="fileAgeing" accept=".xlsx, .xls, .csv" hidden><p id="txt-age-1">Selecionar Arquivo</p></div>
                 <div id="age-card-2" class="upload-view" onclick="document.getElementById('fileSCCAge').click()"><strong>2. Arquivo SCC</strong><input type="file" id="fileSCCAge" accept=".xlsx, .xls, .csv" hidden><p id="txt-age-2">Selecionar Arquivo</p></div>
@@ -167,18 +179,35 @@
         </div>
 
         <div id="autoscrub-tab" class="system-content">
-            <header class="internal-header"><h1>AutoScrub <span>| Análise Status TBR</span></h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>AutoScrub <span>| Análise Status TBR</span></h1>
+            </header>
             <div id="as-upload-section"><div class="upload-view" onclick="document.getElementById('scrubFile').click()"><i class="fa-solid fa-magnifying-glass-chart"></i><h2>Processar Novo Relatório</h2><p>Clique para selecionar o arquivo</p><input type="file" id="scrubFile" hidden accept=".xlsx, .xls, .csv"></div></div>
             <div id="as-results-section" style="display:none;">
-                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><button class="btn-amazon-rect" style="background:#cc0c39; color:#fff; border:none" onclick="as_resetScrub()"><i class="fa-solid fa-trash-can"></i> LIMPAR INFORMAÇÃO</button><div style="font-weight: 800; color: var(--amazon-blue);" id="as-fileNameDisplay"></div></div>
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <button class="btn-amazon-rect" style="background:#cc0c39; color:#fff; border:none" onclick="as_resetScrub()">
+                        <i class="fa-solid fa-trash-can"></i> LIMPAR INFORMAÇÃO
+                    </button>
+                    <div style="font-weight: 800; color: var(--amazon-blue);" id="as-fileNameDisplay"></div>
+                </div>
                 <div class="autoscrub-grid" id="autoscrubGrid"></div>
             </div>
         </div>
 
-        <div id="separador" class="system-content"><header class="internal-header"><h1>Separador TBR</h1></header><div class="upload-view" onclick="document.getElementById('input-s').click()"><i class="fa-solid fa-arrows-split-up-and-left"></i><h2>Processar Novo Lote</h2><p>Extração automática de todas as células iniciadas com "TBR"</p><input type="file" id="input-s" hidden accept=".xlsx, .xls, .csv"></div><div id="s-results"></div></div>
+        <div id="separador" class="system-content">
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>Separador TBR</h1>
+            </header>
+            <div class="upload-view" onclick="document.getElementById('input-s').click()"><i class="fa-solid fa-arrows-split-up-and-left"></i><h2>Processar Novo Lote</h2><p>Extração automática de todas as células iniciadas com "TBR"</p><input type="file" id="input-s" hidden accept=".xlsx, .xls, .csv"></div><div id="s-results"></div>
+        </div>
         
         <div id="compilador" class="system-content">
-            <header class="internal-header"><h1>Compilador</h1></header>
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
+                <h1>Compilador</h1>
+            </header>
             <div class="upload-view" onclick="document.getElementById('fileInputComp').click()"><i class="fa-solid fa-file-circle-plus"></i><h2>Selecionar Arquivos</h2><input type="file" id="fileInputComp" multiple hidden accept=".xlsx, .xls, .csv"></div>
             <div id="compFileListContainer" class="pivot-card" style="display:none; height:auto;">
                 <div class="pivot-header"><span>Arquivos Pendentes</span><button class="btn-ui" style="color:red" onclick="clearCompFiles()"><i class="fa-solid fa-trash-can"></i> Limpar Tudo</button></div>
@@ -314,7 +343,9 @@
     document.getElementById('input-p').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = (ex) => {
-            p_raw = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(ex.target.result), {type:'array'}).Sheets[XLSX.read(new Uint8Array(ex.target.result), {type:'array'}).SheetNames[0]], {defval: ""});
+            const arrayBuffer = ex.target.result;
+            const wb = XLSX.read(new Uint8Array(arrayBuffer), {type:'array'});
+            p_raw = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval: ""});
             if(p_raw.length > 0) {
                 const keys = Object.keys(p_raw[0]);
                 col_p.st = keys.find(k => /station|node/i.test(k)) || "Station";
@@ -427,7 +458,16 @@
         const pad = (n) => n.toString().padStart(2, '0');
         return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
-    function as_resetScrub() { if(confirm("Limpar dados?")) { document.getElementById('as-results-section').style.display = 'none'; document.getElementById('as-upload-section').style.display = 'block'; document.getElementById('scrubFile').value = ""; document.getElementById('autoscrubGrid').innerHTML = ""; } }
+
+    // AJUSTE: Removido confirm() para evitar erros em iframes e garantir funcionamento.
+    function as_resetScrub() { 
+        document.getElementById('as-results-section').style.display = 'none'; 
+        document.getElementById('as-upload-section').style.display = 'block'; 
+        document.getElementById('scrubFile').value = ""; 
+        document.getElementById('autoscrubGrid').innerHTML = ""; 
+        showToast("Dados do AutoScrub limpos.");
+    }
+
     document.getElementById('scrubFile').addEventListener('change', function(e) {
         const file = e.target.files[0]; if (!file) return;
         document.getElementById('as-fileNameDisplay').innerText = `Arquivo: ${file.name}`;
@@ -451,11 +491,17 @@
             const date = as_formatDateTimeBR(row['Last Updated Time'] || row['last_updated_time']);
 
             if (!state.toLowerCase().includes('delivered') && !reasonL.includes('delivered to customer')) {
-                // Hierarquia baseada no Select Case do VBA
-                if (reasonL === "paperwork received" || reasonL === "arrived" || reasonL === "manifested" || reasonL === "shipment not ready" || 
+                // Hierarquia atualizada: Arrived e Eod Scrub agora sempre vão para MNR
+                if (reasonL === "paperwork received" || 
+                    reasonL === "arrived" || 
+                    state.toLowerCase() === "arrived" || 
+                    reasonL === "manifested" || 
+                    reasonL === "shipment not ready" || 
+                    reasonL === "eod scrub" || 
                     (reasonL === "tr canceled" && ship !== "ats_returns_br") || 
-                    state.toLowerCase() === "in transit (fc -> ds)" || state.toLowerCase() === "in transit (dc -> ds)" || state.toLowerCase() === "in transit (ds -> ds)" ||
-                    (reason === "" && state.toLowerCase() === "arrived" && (ship === "std ez local" || ship === "std ez national" || ship === "std ez regional"))) {
+                    state.toLowerCase() === "in transit (fc -> ds)" || 
+                    state.toLowerCase() === "in transit (dc -> ds)" || 
+                    state.toLowerCase() === "in transit (ds -> ds)") {
                     cats.mnr.push({tbr, station, info: row['Source'] || row['source'] || state, date});
                 }
                 else if (reasonL === "tr canceled" && ship === "ats_returns_br") {
@@ -497,17 +543,33 @@
         ];
         configs.forEach(conf => {
             const card = document.createElement('div'); card.className = 'pivot-card as-card';
-            card.innerHTML = `<div class="pivot-header ${conf.color}"><span>${conf.title} (<span id="as-cnt-${conf.id}">${conf.data.length}</span>)</span><button class="btn-ui" onclick="copyTableData('as-tbl-${conf.id}')"><i class="fa-solid fa-copy"></i></button></div>
+            
+            // AJUSTE: Ordenação Alfabética A-Z por Info/Status (Coluna 4 / Propriedade 'info')
+            const sortedData = [...conf.data].sort((a, b) => String(a.info).localeCompare(String(b.info)));
+
+            card.innerHTML = `<div class="pivot-header ${conf.color}"><span>${conf.title} (<span id="as-cnt-${conf.id}">${sortedData.length}</span>)</span><button class="btn-ui" onclick="copyTableData('as-tbl-${conf.id}')"><i class="fa-solid fa-copy"></i></button></div>
                 <div class="as-wrapper" ondragover="event.preventDefault()" ondrop="as_dropRow(event, '${conf.id}')">
                 <table id="as-tbl-${conf.id}"><thead><tr><th><i class="fa-solid fa-grip-vertical"></i></th><th>Station</th><th>TBR</th><th>${conf.colLabel}</th><th>Data</th><th><i class="fa-solid fa-trash-can"></i></th></tr></thead><tbody id="as-body-${conf.id}">
-                ${conf.data.map((item, idx) => `<tr id="as-row-${conf.id}-${idx}"><td><div class="as-handle" draggable="true" ondragstart="as_dragStart(event)"><i class="fa-solid fa-grip-vertical"></i></div></td><td>${item.station}</td><td>${item.tbr}</td><td>${item.info}</td><td>${item.date}</td><td><button class="as-row-delete" onclick="as_deleteRow(this, '${conf.id}')"><i class="fa-solid fa-trash-can"></i></button></td></tr>`).join('')}
+                ${sortedData.map((item, idx) => {
+                    const infoValue = String(item.info || "").trim();
+                    const infoStyle = (conf.id === 'mnr' && infoValue.length === 4) ? 'style="background: #cc0c39; color: #fff; font-weight: bold; border-radius: 4px;"' : '';
+                    
+                    return `<tr id="as-row-${conf.id}-${idx}">
+                        <td><div class="as-handle" draggable="true" ondragstart="as_dragStart(event)"><i class="fa-solid fa-grip-vertical"></i></div></td>
+                        <td>${item.station}</td>
+                        <td>${item.tbr}</td>
+                        <td ${infoStyle}>${item.info}</td>
+                        <td>${item.date}</td>
+                        <td><button class="as-row-delete" onclick="as_deleteRow(this, '${conf.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
+                    </tr>`;
+                }).join('')}
                 </tbody></table></div>`;
             grid.appendChild(card);
         });
     }
     function as_dragStart(e) { as_draggedRow = e.target.closest('tr'); as_draggedRow.classList.add('dragging'); }
     function as_dropRow(e, targetId) { e.preventDefault(); if(!as_draggedRow) return; as_draggedRow.classList.remove('dragging'); document.getElementById(`as-body-${targetId}`).appendChild(as_draggedRow); as_updateCount(); }
-    function as_deleteRow(btn, id) { if(confirm("Remover linha?")) { btn.closest('tr').remove(); as_updateCount(); } }
+    function as_deleteRow(btn, id) { btn.closest('tr').remove(); as_updateCount(); }
     function as_updateCount() { ['mnr', 'reversa', 'ps', 'dsl', 'lm', 'roteirizar', 'divedeep'].forEach(id => { const b = document.getElementById(`as-body-${id}`); if(b) document.getElementById(`as-cnt-${id}`).innerText = b.children.length; }); }
 
     // --- SEPARADOR TBR ---
@@ -545,12 +607,15 @@
     document.getElementById('btnRunCompile').onclick = async () => {
         let final = [];
         for(let i=0; i<comp_files.length; i++) {
-            const wb = XLSX.read(await comp_files[i].arrayBuffer(), {type:'array'});
+            const buffer = await comp_files[i].arrayBuffer();
+            const wb = XLSX.read(buffer, {type:'array'});
             let rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:""});
             const fmt = rows.map(r => { const nr = r.slice(0, 52); while(nr.length < 52) nr.push(""); return nr; });
             if(i === 0) final = fmt; else if(fmt.length > 1) final = final.concat(fmt.slice(1));
         }
-        XLSX.writeFile({SheetNames:["Comp"], Sheets:{Comp:XLSX.utils.aoa_to_sheet(final)}}, `Compilado.xlsx`);
+        const newWb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(newWb, XLSX.utils.aoa_to_sheet(final), "Comp");
+        XLSX.writeFile(newWb, `Compilado.xlsx`);
     };
 
     function as_readExcel(f) { return new Promise(res => { const r = new FileReader(); r.onload = e => res(XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type:'array'}).SheetNames[0]])); r.readAsArrayBuffer(f); }); }
