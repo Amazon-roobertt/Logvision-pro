@@ -22,7 +22,7 @@
             --divedeep-header: #969696;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-light); font-family: 'Urbanist', sans-serif; min-height: 100vh; position: relative; padding-bottom: 60px; }
+        body { background-color: var(--bg-light); font-family: 'Urbanist', sans-serif; min-height: 100vh; position: relative; padding-bottom: 80px; }
         
         nav.tab-bar { background: var(--amazon-blue); padding: 0 40px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; }
         .tab-btn { background: none; border: none; color: #a7acb2; padding: 18px 25px; font-family: inherit; font-weight: 600; cursor: pointer; font-size: 14px; border-bottom: 4px solid transparent; transition: 0.3s; }
@@ -33,11 +33,13 @@
         header.internal-header { display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--amazon-orange); padding-bottom: 15px; margin-bottom: 25px; }
         header img { height: 45px; }
         header h1 { font-size: 26px; color: #232f3e; font-weight: 700; }
+        header h1 span { color: #007185; }
         
         .system-content { display: none; }
         .system-content.active { display: block; }
         
-        .upload-view { border: 2px dashed var(--amazon-orange); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; background: #fff; margin-bottom: 30px; transition: 0.2s; }
+        .upload-view { border: 2px dashed #ccc; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; background: #fafafa; margin-bottom: 30px; transition: 0.2s; }
+        .upload-view:hover { border-color: var(--amazon-orange); background: rgba(255, 153, 0, 0.03); }
         .upload-view.file-loaded { border: 2px solid #2e7d32; background: #f0fff4; }
         .upload-view.file-loaded i { color: #2e7d32; }
 
@@ -49,8 +51,36 @@
         td { padding: 10px; border: 1px solid #eee; font-size: 13px; font-weight: 600; text-align: center; }
         .node-cell { font-weight: 700; border-right: 1px solid rgba(0,0,0,0.05); }
 
-        .btn-amazon-rect { background: var(--amazon-orange); color: #000; border: 1px solid #d47f00; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-ui { background: #fff; color: #232f3e; border: 1px solid #ddd; padding: 6px 12px; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+        .btn-amazon-rect { background: var(--amazon-orange); color: #000; border: 1px solid #d47f00; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; font-family: inherit;}
+        .btn-amazon-rect:hover { background: #f58200; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .btn-amazon-rect:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Estilos Novos Adicionados (Gerador Callout) */
+        .btn-amazon-blue { background: #007185; color: #fff; border: 1px solid #005a6a; padding: 10px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; font-family: inherit;}
+        .btn-amazon-blue:hover { background: #005a6a; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .btn-amazon-blue:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .info-box { background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; border-left: 5px solid #0d47a1; display: flex; gap: 10px; align-items: center; font-size: 13px;}
+        .error-box { background: #fdeded; color: #cc0c39; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; border-left: 5px solid #cc0c39; display: none; gap: 10px; align-items: center; font-size: 13px;}
+        
+        textarea.callout-output { width: 100%; flex: 1; min-height: 550px; padding: 20px; border: none; background: #fafafa; font-family: monospace; font-size: 13px; outline: none; resize: none; color: #333; line-height: 1.5; }
+        textarea.callout-output:focus { background: #fff; box-shadow: inset 0 0 0 2px var(--amazon-orange); }
+
+        .split-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 30px; align-items: start; }
+        .left-panel { display: flex; flex-direction: column; gap: 15px; }
+        .right-panel { display: flex; flex-direction: column; height: 100%; }
+        .left-panel .upload-view { margin-bottom: 10px; padding: 25px 15px; }
+        .w-full { width: 100%; justify-content: center; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        /* Estilos Antigos Mantidos */
+        .btn-ui { background: #fff; color: #232f3e; border: 1px solid #ddd; padding: 6px 12px; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 5px; transition: 0.2s; font-family: inherit; }
+        .btn-ui:hover { background: #f3f3f3; border-color: #bbb; }
+        .btn-ui.active { border-color: var(--amazon-orange); color: #c45500; background: #FEF8E6; }
 
         .filter-section { background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 25px; }
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
@@ -78,10 +108,10 @@
         .stat-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; border-top: 4px solid var(--amazon-orange); text-align: center; }
         .val { font-size: 22px; font-weight: 800; display: block; }
 
-        .watermark { position: fixed; bottom: 15px; display: flex; align-items: center; gap: 8px; opacity: 0.7; pointer-events: none; z-index: 5000; }
+        .watermark { position: fixed; bottom: 15px; display: flex; align-items: center; gap: 8px; opacity: 0.7; pointer-events: none; z-index: 5000; transition: 0.3s; }
         .wm-right { right: 20px; }
         .wm-left { left: 20px; }
-        .watermark img { height: 20px; }
+        .watermark img { height: 20px; filter: grayscale(1); }
         .watermark span { font-size: 13px; font-weight: 800; color: #232f3e; letter-spacing: 1px; }
 
         #toast { position: fixed; bottom: 30px; right: 30px; background: #232f3e; color: #fff; padding: 12px 25px; border-radius: 4px; display: none; z-index: 9999; }
@@ -101,19 +131,21 @@
     <button class="tab-btn" onclick="openTab('autoscrub-tab')">AutoScrub Pro</button>
     <button class="tab-btn" onclick="openTab('separador')">Separador TBR</button>
     <button class="tab-btn" onclick="openTab('compilador')">Compilador</button>
+    <button class="tab-btn" onclick="openTab('callout-tab')">Gerador Callout</button>
 </nav>
 
 <div class="container">
     <div class="canvas-container">
+        
         <div id="general" class="system-content active">
             <header class="internal-header">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
                 <h1>General View <span>| Operacional</span></h1>
             </header>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
-                <div id="gv-card-1" class="upload-view" onclick="document.getElementById('gv-in-1').click()"><i class="fa-solid fa-file-csv"></i><h3>1. SCC</h3><p id="gv-txt-1">Selecionar Arquivo</p><input type="file" id="gv-in-1" hidden accept=".xlsx, .xls, .csv"></div>
-                <div id="gv-card-2" class="upload-view" onclick="document.getElementById('gv-in-2').click()"><i class="fa-solid fa-boxes-stacked"></i><h3>2. Total Packages</h3><p id="gv-txt-2">Selecionar Arquivo</p><input type="file" id="gv-in-2" hidden accept=".xlsx, .xls, .csv"></div>
-                <div id="gv-card-3" class="upload-view" onclick="document.getElementById('gv-in-3').click()"><i class="fa-solid fa-chart-line"></i><h3>3. Performance</h3><p id="gv-txt-3">Selecionar Arquivo</p><input type="file" id="gv-in-3" hidden accept=".xlsx, .xls, .csv"></div>
+                <div id="gv-card-1" class="upload-view" onclick="document.getElementById('gv-in-1').click()"><i class="fa-solid fa-file-csv" style="font-size:30px"></i><h3>1. SCC</h3><p id="gv-txt-1">Selecionar Arquivo</p><input type="file" id="gv-in-1" hidden accept=".xlsx, .xls, .csv"></div>
+                <div id="gv-card-2" class="upload-view" onclick="document.getElementById('gv-in-2').click()"><i class="fa-solid fa-boxes-stacked" style="font-size:30px"></i><h3>2. Total Packages</h3><p id="gv-txt-2">Selecionar Arquivo</p><input type="file" id="gv-in-2" hidden accept=".xlsx, .xls, .csv"></div>
+                <div id="gv-card-3" class="upload-view" onclick="document.getElementById('gv-in-3').click()"><i class="fa-solid fa-chart-line" style="font-size:30px"></i><h3>3. Performance</h3><p id="gv-txt-3">Selecionar Arquivo</p><input type="file" id="gv-in-3" hidden accept=".xlsx, .xls, .csv"></div>
             </div>
             <div id="gv-filter-section" style="display:none;" class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR STATUS:</label><div class="checkbox-group" id="gv-filter-group"></div></div>
             <div id="gv-result-area" style="display: none;">
@@ -127,7 +159,7 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
                 <h1>Painel de <span>Pendências</span></h1>
             </header>
-            <div id="p-upload-view" class="upload-view" onclick="document.getElementById('input-p').click()"><i class="fa-solid fa-box-open"></i><h2>Processar Relatório</h2><button class="btn-amazon-rect">Escolher Ficheiro</button><input type="file" id="input-p" hidden accept=".xlsx, .xls, .csv"></div>
+            <div id="p-upload-view" class="upload-view" onclick="document.getElementById('input-p').click()"><i class="fa-solid fa-box-open" style="font-size:50px"></i><h2>Processar Relatório</h2><button class="btn-amazon-rect" style="margin-top:10px">Escolher Ficheiro</button><input type="file" id="input-p" hidden accept=".xlsx, .xls, .csv"></div>
             <div id="p-result-view" style="display: none;">
                 <div class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR POR STATUS:</label><div class="checkbox-group" id="p-filter-group"></div></div>
                 <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:15px; margin-bottom:25px;">
@@ -183,7 +215,7 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
                 <h1>AutoScrub <span>| Análise Status TBR</span></h1>
             </header>
-            <div id="as-upload-section"><div class="upload-view" onclick="document.getElementById('scrubFile').click()"><i class="fa-solid fa-magnifying-glass-chart"></i><h2>Processar Novo Relatório</h2><p>Clique para selecionar o arquivo</p><input type="file" id="scrubFile" hidden accept=".xlsx, .xls, .csv"></div></div>
+            <div id="as-upload-section"><div class="upload-view" onclick="document.getElementById('scrubFile').click()"><i class="fa-solid fa-magnifying-glass-chart" style="font-size:50px"></i><h2>Processar Novo Relatório</h2><p>Clique para selecionar o arquivo</p><input type="file" id="scrubFile" hidden accept=".xlsx, .xls, .csv"></div></div>
             <div id="as-results-section" style="display:none;">
                 <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <button class="btn-amazon-rect" style="background:#cc0c39; color:#fff; border:none" onclick="as_resetScrub()">
@@ -200,7 +232,11 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
                 <h1>Separador TBR</h1>
             </header>
-            <div class="upload-view" onclick="document.getElementById('input-s').click()"><i class="fa-solid fa-arrows-split-up-and-left"></i><h2>Processar Novo Lote</h2><p>Extração automática de todas as células iniciadas com "TBR"</p><input type="file" id="input-s" hidden accept=".xlsx, .xls, .csv"></div><div id="s-results"></div>
+            <div class="upload-view" onclick="document.getElementById('input-s').click()"><i class="fa-solid fa-arrows-split-up-and-left" style="font-size:50px"></i><h2>Processar Novo Lote</h2><p>Extração automática de todas as células iniciadas com "TBR"</p><input type="file" id="input-s" hidden accept=".xlsx, .xls, .csv"></div>
+            <div style="display:flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-ui" style="color:red" onclick="clearSeparador()"><i class="fa-solid fa-trash-can"></i> Limpar Informações</button>
+            </div>
+            <div id="s-results"></div>
         </div>
         
         <div id="compilador" class="system-content">
@@ -208,13 +244,100 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
                 <h1>Compilador</h1>
             </header>
-            <div class="upload-view" onclick="document.getElementById('fileInputComp').click()"><i class="fa-solid fa-file-circle-plus"></i><h2>Selecionar Arquivos</h2><input type="file" id="fileInputComp" multiple hidden accept=".xlsx, .xls, .csv"></div>
+            <div class="upload-view" onclick="document.getElementById('fileInputComp').click()"><i class="fa-solid fa-file-circle-plus" style="font-size:50px"></i><h2>Selecionar Arquivos</h2><input type="file" id="fileInputComp" multiple hidden accept=".xlsx, .xls, .csv"></div>
             <div id="compFileListContainer" class="pivot-card" style="display:none; height:auto;">
                 <div class="pivot-header"><span>Arquivos Pendentes</span><button class="btn-ui" style="color:red" onclick="clearCompFiles()"><i class="fa-solid fa-trash-can"></i> Limpar Tudo</button></div>
                 <div id="compFileListBody"></div>
                 <div style="padding:20px; text-align:center"><button class="btn-amazon-rect" id="btnRunCompile">Compilar e Baixar</button></div>
             </div>
         </div>
+
+        <!-- NOVA ABA: GERADOR CALLOUT -->
+        <div id="callout-tab" class="system-content">
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg">
+                <h1>Gerador de Callout <span>Last Mile / DCR</span></h1>
+            </header>
+
+            <div class="split-layout">
+                <div class="left-panel">
+                    
+                    <div id="statusMessage" class="error-box">
+                        <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+                        <span id="statusText">Erro ao processar.</span>
+                    </div>
+
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
+                        <h3 style="font-size: 14px; font-weight: 700; color: var(--amazon-blue); margin-bottom: 10px;">
+                            <i class="fa-solid fa-boxes-packing"></i> Callout (PM + SCC)
+                        </h3>
+                        <div id="co-card-pm" class="upload-view" onclick="document.getElementById('pmFile').click()">
+                            <i class="fa-solid fa-file-excel" style="font-size: 30px;"></i>
+                            <h2>1. Arquivo PM</h2>
+                            <p id="co-txt-pm">Selecionar PM (tracking_id, node_id, bucket)</p>
+                            <input type="file" id="pmFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+                        
+                        <div id="co-card-scc" class="upload-view" onclick="document.getElementById('sccFile').click()">
+                            <i class="fa-solid fa-file-invoice" style="font-size: 30px;"></i>
+                            <h2>2. Arquivo SCC</h2>
+                            <p id="co-txt-scc">Selecionar SCC (TBR, Cidade)</p>
+                            <input type="file" id="sccFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+
+                        <button class="btn-amazon-rect w-full" id="btnGenerate" style="font-size: 14px; padding: 12px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Callout PM+SCC
+                        </button>
+                    </div>
+
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
+                        <h3 style="font-size: 14px; font-weight: 700; color: #007185; margin-bottom: 10px;">
+                            <i class="fa-solid fa-chart-pie"></i> Análise DCR (Independente)
+                        </h3>
+                        
+                        <div id="co-card-dcr" class="upload-view" style="border-color: #007185;" onclick="document.getElementById('dcrFile').click()">
+                            <i class="fa-solid fa-file-csv" style="font-size: 30px; color: #007185;"></i>
+                            <h2>3. Arquivo DCR</h2>
+                            <p id="co-txt-dcr">Relatório DCR Oficial</p>
+                            <input type="file" id="dcrFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+
+                        <button class="btn-amazon-blue w-full" id="btnGenerateDCR" style="font-size: 14px; padding: 12px;">
+                            <i class="fa-solid fa-gears"></i> Analisar DCR
+                        </button>
+                    </div>
+
+                    <!-- Alterado onclick para clearCalloutTab() -->
+                    <button class="btn-ui w-full" id="btnClear" onclick="clearCalloutTab()" style="justify-content: center; color: #cc0c39; border-color: #fca5a5; background: #fef2f2; font-size: 14px; padding: 12px;">
+                        <i class="fa-solid fa-trash-can"></i> Limpar Todo o Sistema
+                    </button>
+                </div>
+
+                <div class="right-panel">
+                    <div class="pivot-card" id="result-card" style="display: flex; flex-direction: column; height: 100%; margin-bottom: 0;">
+                        <div class="pivot-header">
+                            <span>Resultado do Callout</span>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-ui active" id="btnListLayout" onclick="switchLayout('list')">
+                                    <i class="fa-solid fa-list"></i> Formato: Lista
+                                </button>
+                                <button class="btn-ui" id="btnGroupLayout" onclick="switchLayout('group')">
+                                    <i class="fa-solid fa-layer-group"></i> Formato: Agrupado
+                                </button>
+                                <!-- Alterado onclick para copyCallout() -->
+                                <button class="btn-ui" onclick="copyCallout()" style="color: #232f3e;">
+                                    <i class="fa-solid fa-copy"></i> Copiar Tudo
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="outputArea" class="callout-output" placeholder="Seu callout gerado ou análise DCR aparecerá aqui... Você poderá editá-lo livremente antes de copiar."></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- FIM NOVA ABA: GERADOR CALLOUT -->
+
     </div>
 </div>
 
@@ -248,7 +371,7 @@
 
     function showToast(m) {
         const t = document.getElementById('toast'); t.innerText = m; t.style.display='block';
-        setTimeout(() => t.style.display='none', 2000);
+        setTimeout(() => t.style.display='none', 2500);
     }
 
     function copyTableData(id) { 
@@ -311,7 +434,7 @@
         for(let i=1; i < sccData.length; i++) {
             let row = sccData[i]; let st = String(row[idxStation] || "").trim().toUpperCase();
             let state = String(row[idxState] || "").toUpperCase().trim();
-            if(!st || st.startsWith('D') || st.startsWith('E')) continue;
+            if(!st || st === 'N/A' || st === 'NA' || st.startsWith('D') || st.startsWith('E')) continue;
             if(!nodes[st]) nodes[st] = { ead: 0, pen: 0, pot: 0, ont: 0, mnr: 0 };
             if(GV_ACTIVE_FILTERS.includes(state)) nodes[st].pen++;
             if(STATUS_MNR_OFFICIAL.includes(state)) nodes[st].mnr++;
@@ -379,7 +502,7 @@
     function renderPainel() {
         const filtered = p_raw.filter(r => {
             const st = String(r[col_p.st] || "").trim().toUpperCase();
-            return p_active_filters.includes(String(r[col_p.state]||"").toUpperCase().trim()) && !st.startsWith('D') && !st.startsWith('E');
+            return p_active_filters.includes(String(r[col_p.state]||"").toUpperCase().trim()) && st !== 'N/A' && st !== 'NA' && !st.startsWith('D') && !st.startsWith('E');
         });
         const nodes = {}; filtered.forEach(r => { const n = r[col_p.st] || "N/A"; if(!nodes[n]) nodes[n] = []; nodes[n].push(r); });
         const sortedKeys = Object.keys(nodes).sort((a,b) => nodes[b].length - nodes[a].length);
@@ -407,7 +530,7 @@
         p_raw.forEach(r => {
             const s = String(r[col_p.state]||"").toUpperCase().trim();
             const n = String(r[col_p.st] || "N/A").trim().toUpperCase();
-            if(!n || n.startsWith('D') || n.startsWith('E')) return;
+            if(!n || n === 'N/A' || n === 'NA' || n.startsWith('D') || n.startsWith('E')) return;
             if(STATUS_MNR_OFFICIAL.includes(s)) {
                 if(/STD EZ/.test(String(r["Ship Option"]||"").toUpperCase())) { c_fm[n] = (c_fm[n]||0)+1; t_fm++; }
                 else { c_fcsc[n] = (c_fcsc[n]||0)+1; t_fcsc++; }
@@ -459,7 +582,6 @@
         return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
-    // AJUSTE: Removido confirm() para evitar erros em iframes e garantir funcionamento.
     function as_resetScrub() { 
         document.getElementById('as-results-section').style.display = 'none'; 
         document.getElementById('as-upload-section').style.display = 'block'; 
@@ -491,7 +613,6 @@
             const date = as_formatDateTimeBR(row['Last Updated Time'] || row['last_updated_time']);
 
             if (!state.toLowerCase().includes('delivered') && !reasonL.includes('delivered to customer')) {
-                // Hierarquia atualizada: Arrived e Eod Scrub agora sempre vão para MNR
                 if (reasonL === "paperwork received" || 
                     reasonL === "arrived" || 
                     state.toLowerCase() === "arrived" || 
@@ -543,8 +664,6 @@
         ];
         configs.forEach(conf => {
             const card = document.createElement('div'); card.className = 'pivot-card as-card';
-            
-            // AJUSTE: Ordenação Alfabética A-Z por Info/Status (Coluna 4 / Propriedade 'info')
             const sortedData = [...conf.data].sort((a, b) => String(a.info).localeCompare(String(b.info)));
 
             card.innerHTML = `<div class="pivot-header ${conf.color}"><span>${conf.title} (<span id="as-cnt-${conf.id}">${sortedData.length}</span>)</span><button class="btn-ui" onclick="copyTableData('as-tbl-${conf.id}')"><i class="fa-solid fa-copy"></i></button></div>
@@ -553,12 +672,13 @@
                 ${sortedData.map((item, idx) => {
                     const infoValue = String(item.info || "").trim();
                     const infoStyle = (conf.id === 'mnr' && infoValue.length === 4) ? 'style="background: #cc0c39; color: #fff; font-weight: bold; border-radius: 4px;"' : '';
+                    const editableAttr = (conf.id === 'divedeep') ? 'contenteditable="true" style="background: #fffafa; border-bottom: 1px dashed var(--amazon-orange); cursor: text;" title="Clique para editar o texto manualmente"' : '';
                     
                     return `<tr id="as-row-${conf.id}-${idx}">
                         <td><div class="as-handle" draggable="true" ondragstart="as_dragStart(event)"><i class="fa-solid fa-grip-vertical"></i></div></td>
                         <td>${item.station}</td>
                         <td>${item.tbr}</td>
-                        <td ${infoStyle}>${item.info}</td>
+                        <td ${infoStyle} ${editableAttr}>${item.info}</td>
                         <td>${item.date}</td>
                         <td><button class="as-row-delete" onclick="as_deleteRow(this, '${conf.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
                     </tr>`;
@@ -573,7 +693,14 @@
     function as_updateCount() { ['mnr', 'reversa', 'ps', 'dsl', 'lm', 'roteirizar', 'divedeep'].forEach(id => { const b = document.getElementById(`as-body-${id}`); if(b) document.getElementById(`as-cnt-${id}`).innerText = b.children.length; }); }
 
     // --- SEPARADOR TBR ---
+    function clearSeparador() {
+        document.getElementById('input-s').value = "";
+        document.getElementById('s-results').innerHTML = "";
+        showToast("Informações limpas!");
+    }
+
     document.getElementById('input-s').onchange = (e) => {
+        if (!e.target.files[0]) return;
         const r = new FileReader(); r.onload = (ex) => {
             const wb = XLSX.read(new Uint8Array(ex.target.result), {type:'array'});
             const ws = wb.Sheets[wb.SheetNames[0]];
@@ -619,11 +746,465 @@
     };
 
     function as_readExcel(f) { return new Promise(res => { const r = new FileReader(); r.onload = e => res(XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type:'array'}).SheetNames[0]])); r.readAsArrayBuffer(f); }); }
-    function copyGVData() { 
-        let t = "Node\tTotal EAD\tPen\tPot\tOntime\tMNR\n"; 
-        document.querySelectorAll('#gv-body tr').forEach(r => { t += Array.from(r.children).map(td => td.innerText).join('\t') + '\n'; }); 
-        copyT(t);
+    
+    // ==========================================
+    // LOGICA DA NOVA ABA (CALLOUT / DCR)
+    // ==========================================
+    let currentLayout = 'list'; 
+    let finalDataMap = {}; 
+    let totalTbrsGlobal = 0;
+    
+    window.tbrNotes = {};
+    window.cityNotes = {};
+    let manualActionPlan = "";
+    let lastGeneratedText = ""; 
+    const MARKER_ACTION_PLAN = "\n\n--- ANOTAÇÕES GERAIS / ACTION PLAN ---\n";
+
+    const btnGenerate = document.getElementById('btnGenerate');
+    const btnGenerateDCR = document.getElementById('btnGenerateDCR');
+    const pmFileInput = document.getElementById('pmFile');
+    const sccFileInput = document.getElementById('sccFile');
+    const dcrFileInput = document.getElementById('dcrFile');
+    const outputArea = document.getElementById('outputArea');
+    const statusBox = document.getElementById('statusMessage');
+    const statusText = document.getElementById('statusText');
+
+    const ALIASES_TBR_PM = ['tracking_id', 'tracking', 'rastreio'];
+    const ALIASES_NODE_PM = ['node_id', 'node', 'site'];
+    const ALIASES_BUCKET_PM = ['bucket', 'motivo', 'status', 'reason', 'descrição', 'delay', 'root cause', 'causa'];
+    const ALIASES_TBR_SCC = ['tbr', 'tracking', 'rastreio', 'awb', 'id'];
+    const ALIASES_CITY_SCC = ['cidade', 'city', 'município', 'municipio', 'destino'];
+
+    pmFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            document.getElementById('co-card-pm').classList.add('file-loaded');
+            document.getElementById('co-txt-pm').innerText = '✓ ' + e.target.files[0].name;
+        }
+    });
+
+    sccFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            document.getElementById('co-card-scc').classList.add('file-loaded');
+            document.getElementById('co-txt-scc').innerText = '✓ ' + e.target.files[0].name;
+        }
+    });
+    
+    dcrFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            document.getElementById('co-card-dcr').classList.add('file-loaded');
+            document.getElementById('co-txt-dcr').innerText = '✓ ' + e.target.files[0].name;
+        }
+    });
+
+    function findKeyByAlias(row, aliases) {
+        const keys = Object.keys(row);
+        for (let key of keys) {
+            const lowerKey = key.toLowerCase().trim();
+            if (aliases.some(alias => lowerKey.includes(alias))) return key;
+        }
+        return null;
     }
+
+    function readExcelFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    resolve(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+                } catch (error) { reject("Erro ao processar o arquivo."); }
+            };
+            reader.onerror = () => reject("Erro ao ler o arquivo.");
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function readExcelFileAsAOA(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" }));
+                } catch (error) { reject("Erro ao processar DCR."); }
+            };
+            reader.onerror = () => reject("Erro ao ler o arquivo.");
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function showError(message) {
+        statusText.innerText = message;
+        statusBox.style.display = 'flex';
+    }
+    function hideError() { statusBox.style.display = 'none'; }
+
+    // Renomeado para não conflitar
+    window.clearCalloutTab = function() {
+        finalDataMap = {};
+        totalTbrsGlobal = 0;
+        window.tbrNotes = {};
+        window.cityNotes = {};
+        manualActionPlan = "";
+        lastGeneratedText = "";
+        
+        pmFileInput.value = "";
+        sccFileInput.value = "";
+        dcrFileInput.value = "";
+        
+        document.getElementById('co-card-pm').classList.remove('file-loaded');
+        document.getElementById('co-txt-pm').innerText = 'Selecionar PM (tracking_id, node_id, bucket)';
+        document.getElementById('co-card-scc').classList.remove('file-loaded');
+        document.getElementById('co-txt-scc').innerText = 'Selecionar SCC (TBR, Cidade)';
+        document.getElementById('co-card-dcr').classList.remove('file-loaded');
+        document.getElementById('co-txt-dcr').innerText = 'Relatório DCR Oficial';
+        
+        outputArea.value = "";
+        
+        hideError();
+        showToast("Sistema 100% limpo! Pode adicionar novos arquivos.");
+    };
+
+    function saveAnnotations() {
+        if (!outputArea.value) return;
+        const currentContent = outputArea.value;
+        let textToParseForInline = currentContent;
+
+        if (currentContent.includes(MARKER_ACTION_PLAN)) {
+            const parts = currentContent.split(MARKER_ACTION_PLAN);
+            manualActionPlan = parts[1] || "";
+            textToParseForInline = parts[0]; 
+        }
+
+        const lines = textToParseForInline.split('\n');
+        let allCities = new Set();
+        for(let n in finalDataMap) {
+            for(let b in finalDataMap[n]) {
+                for(let c in finalDataMap[n][b]) { allCities.add(c); }
+            }
+        }
+        const citiesArray = Array.from(allCities).sort((a,b) => b.length - a.length);
+
+        lines.forEach(line => {
+            const tbrMatch = line.match(/(TBR[A-Z0-9]+)/i);
+            if (tbrMatch) {
+                const tbr = tbrMatch[1].toUpperCase();
+                let note = "";
+                
+                if (currentLayout === 'list') {
+                    let city = "";
+                    for(let n in finalDataMap) {
+                        for(let b in finalDataMap[n]) {
+                            for(let c in finalDataMap[n][b]) { if (finalDataMap[n][b][c].includes(tbr)) { city = c; break; } }
+                        }
+                    }
+                    const paddedTbr = (tbr + "                ").substring(0, 20);
+                    const baseStr = `${paddedTbr} ${city}`;
+                    
+                    if (line.includes(baseStr)) note = line.substring(line.indexOf(baseStr) + baseStr.length);
+                    else {
+                        const idx = line.toUpperCase().indexOf(tbr) + tbr.length;
+                        let afterTbr = line.substring(idx);
+                        if (city && afterTbr.includes(city)) afterTbr = afterTbr.substring(afterTbr.indexOf(city) + city.length);
+                        note = afterTbr;
+                    }
+                } else {
+                    const idx = line.toUpperCase().indexOf(tbr) + tbr.length;
+                    note = line.substring(idx);
+                }
+                if (note !== "") window.tbrNotes[tbr] = note;
+            } 
+            else if (currentLayout === 'group') {
+                for (let city of citiesArray) {
+                    if (line.startsWith(city)) {
+                        const note = line.substring(city.length);
+                        if (note !== "") window.cityNotes[city] = note;
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
+    window.switchLayout = function(layout) {
+        if (currentLayout === layout) return;
+        if (Object.keys(finalDataMap).length > 0) saveAnnotations();
+        
+        currentLayout = layout;
+        const btnList = document.getElementById('btnListLayout');
+        const btnGroup = document.getElementById('btnGroupLayout');
+        
+        if (layout === 'list') {
+            btnList.classList.add('active');
+            btnGroup.classList.remove('active');
+        } else {
+            btnGroup.classList.add('active');
+            btnList.classList.remove('active');
+        }
+
+        if (Object.keys(finalDataMap).length > 0) renderOutput();
+    };
+
+    // Renomeado para não conflitar
+    window.copyCallout = function() {
+        if (!outputArea.value) return;
+        outputArea.select();
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        showToast("Copiado com sucesso!");
+    };
+
+    btnGenerate.addEventListener('click', async () => {
+        const pmFile = pmFileInput.files[0];
+        const sccFile = sccFileInput.files[0];
+
+        if (!pmFile || !sccFile) {
+            showError("Você precisa selecionar os arquivos de PM e SCC para gerar este callout!");
+            return;
+        }
+
+        if (outputArea.value) saveAnnotations();
+        hideError();
+        btnGenerate.disabled = true;
+        btnGenerate.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+        
+        try {
+            const pmJson = await readExcelFile(pmFile);
+            const sccJson = await readExcelFile(sccFile);
+
+            if (pmJson.length === 0) throw new Error("Arquivo Perfect Mile está vazio.");
+            if (sccJson.length === 0) throw new Error("Arquivo SCC está vazio.");
+
+            let sccMap = {};
+            let sccTbrKeyFound = false;
+            
+            sccJson.forEach(row => {
+                const tbrKey = findKeyByAlias(row, ALIASES_TBR_SCC);
+                const cityKey = findKeyByAlias(row, ALIASES_CITY_SCC);
+                if (tbrKey && cityKey) {
+                    sccTbrKeyFound = true;
+                    const tbrVal = String(row[tbrKey]).trim().toUpperCase();
+                    if (tbrVal) sccMap[tbrVal] = String(row[cityKey]).trim();
+                }
+            });
+
+            if (!sccTbrKeyFound) throw new Error("Não foi possível identificar 'TBR' ou 'Cidade' no SCC.");
+
+            finalDataMap = {}; 
+            totalTbrsGlobal = 0;
+            let pmKeysFound = false;
+            let processedTBRs = new Set(); 
+
+            pmJson.forEach(row => {
+                const tbrKey = findKeyByAlias(row, ALIASES_TBR_PM);
+                const bucketKey = findKeyByAlias(row, ALIASES_BUCKET_PM);
+                const nodeKey = findKeyByAlias(row, ALIASES_NODE_PM);
+
+                if (tbrKey && bucketKey && nodeKey) {
+                    pmKeysFound = true;
+                    const tbrRaw = String(row[tbrKey]).trim().toUpperCase();
+                    if (tbrRaw.startsWith('TBR')) {
+                        if (processedTBRs.has(tbrRaw)) return; 
+                        processedTBRs.add(tbrRaw);
+
+                        let bucket = String(row[bucketKey]).trim() || "Sem Motivo";
+                        const node = String(row[nodeKey]).trim().toUpperCase() || "NODE DESCONHECIDO";
+                        const cidade = sccMap[tbrRaw] || "Não informada";
+
+                        const bLower = bucket.toLowerCase();
+                        if (bLower.includes("not dispatched")) {
+                            bucket = "𝗜𝗻𝗱𝘂𝘇𝗶𝗱𝗼 𝗲 𝗻𝗮̃𝗼 𝗰𝗼𝗹𝗲𝘁𝗮𝗱𝗼";
+                        } else if (bLower.includes("out of delivery time") || bLower.includes("late dispatch") || bLower.includes("not inducted on time")) {
+                            bucket = "𝗙𝗮𝘇𝗲𝗿 𝗗𝗶𝘃𝗲 𝗗𝗲𝗲𝗽";
+                        } else if (bLower.includes("not attempted on that day") || bLower === "none") {
+                            bucket = "𝗡𝗼𝗻𝗲";
+                        } else if (bLower.includes("other")) {
+                            bucket = "𝗣𝗮𝗰𝗼𝘁𝗲 𝗰𝗼𝗺 𝟮 𝗘𝗔𝗗 / 𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗱𝗲 𝗠𝗠 𝗼𝘂 𝗙𝗠";
+                        }
+
+                        if (!finalDataMap[node]) finalDataMap[node] = {};
+                        if (!finalDataMap[node][bucket]) finalDataMap[node][bucket] = {};
+                        if (!finalDataMap[node][bucket][cidade]) finalDataMap[node][bucket][cidade] = [];
+
+                        finalDataMap[node][bucket][cidade].push(tbrRaw);
+                        totalTbrsGlobal++;
+                    }
+                }
+            });
+
+            if (!pmKeysFound) throw new Error("Colunas necessárias ausentes no arquivo PM.");
+            if (totalTbrsGlobal === 0) throw new Error("Nenhum registro com 'TBR' encontrado no PM.");
+
+            renderOutput();
+            showToast("Callout gerado com sucesso!");
+
+        } catch (error) { showError(error.message || error); } 
+        finally {
+            btnGenerate.disabled = false;
+            btnGenerate.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Callout PM+SCC';
+        }
+    });
+
+    function renderOutput() {
+        let outputText = "";
+        const nodes = Object.keys(finalDataMap).sort();
+
+        nodes.forEach((node, index) => {
+            const bucketsObj = finalDataMap[node];
+            let nodeTotal = 0;
+
+            Object.values(bucketsObj).forEach(cidadesObj => {
+                 Object.values(cidadesObj).forEach(tbrs => { nodeTotal += tbrs.length; });
+            });
+
+            if (index > 0) outputText += "\n--------------------------------------------------\n\n";
+            outputText += `Node ${node} - Total: ${nodeTotal}\n\n`;
+            
+            outputText += `𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗱𝗲 𝗟𝗠:\n\n`;
+
+            const buckets = Object.keys(bucketsObj).sort();
+
+            buckets.forEach(bucket => {
+                const cidadesObj = bucketsObj[bucket];
+                let bucketTotal = 0;
+                Object.values(cidadesObj).forEach(tbrs => { bucketTotal += tbrs.length; });
+                outputText += `${bucket} - Total: ${bucketTotal}\n`;
+                
+                const cidades = Object.keys(cidadesObj).sort();
+                
+                if (currentLayout === 'list') {
+                    cidades.forEach(cidade => {
+                        cidadesObj[cidade].forEach(tbr => {
+                            const paddedTbr = (tbr + "                ").substring(0, 20);
+                            outputText += `${paddedTbr} ${cidade}${window.tbrNotes[tbr] || ""}\n`;
+                        });
+                    });
+                } else {
+                    cidades.forEach(cidade => {
+                        outputText += `${cidade}${window.cityNotes[cidade] || ""}\n`;
+                        cidadesObj[cidade].forEach(tbr => { outputText += `${tbr}${window.tbrNotes[tbr] || ""}\n`; });
+                    });
+                }
+                outputText += `\n`; 
+            });
+        });
+        
+        if (totalTbrsGlobal > 0) outputText += `Total Geral de TBRs processados: ${totalTbrsGlobal}`;
+        
+        lastGeneratedText = outputText;
+        outputArea.value = outputText + MARKER_ACTION_PLAN + manualActionPlan;
+    }
+
+    btnGenerateDCR.addEventListener('click', async () => {
+        const dcrFile = dcrFileInput.files[0];
+        if (!dcrFile) {
+            showError("Por favor, selecione o arquivo DCR.");
+            return;
+        }
+
+        if (outputArea.value.includes(MARKER_ACTION_PLAN)) {
+            const parts = outputArea.value.split(MARKER_ACTION_PLAN);
+            manualActionPlan = parts[1] || "";
+        }
+
+        hideError();
+        btnGenerateDCR.disabled = true;
+        btnGenerateDCR.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando DCR...';
+
+        try {
+            const data = await readExcelFileAsAOA(dcrFile);
+            if (data.length <= 1) throw new Error("Arquivo DCR parece estar vazio.");
+
+            const nodes = {};
+
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (!row || row.length === 0) continue;
+
+                const nodeStr = String(row[4] || "").trim().toUpperCase();  
+                const tbrStr = String(row[9] || "").trim().toUpperCase();   
+                const reasonStr = String(row[11] || "").trim();             
+                const offenderStr = String(row[12] || "").trim() || "N/A";  
+
+                if (!nodeStr && !tbrStr) continue;
+
+                if (!nodes[nodeStr]) {
+                    nodes[nodeStr] = {
+                        total: 0,
+                        reasons: {},
+                        offenders: {}
+                    };
+                }
+
+                nodes[nodeStr].total++;
+                nodes[nodeStr].reasons[reasonStr] = (nodes[nodeStr].reasons[reasonStr] || 0) + 1;
+
+                if (!nodes[nodeStr].offenders[offenderStr]) {
+                    nodes[nodeStr].offenders[offenderStr] = { total: 0, reasons: {} };
+                }
+                nodes[nodeStr].offenders[offenderStr].total++;
+
+                if (!nodes[nodeStr].offenders[offenderStr].reasons[reasonStr]) {
+                    nodes[nodeStr].offenders[offenderStr].reasons[reasonStr] = [];
+                }
+                nodes[nodeStr].offenders[offenderStr].reasons[reasonStr].push(tbrStr);
+            }
+
+            let outputText = "";
+            const sortedNodes = Object.keys(nodes).sort();
+
+            sortedNodes.forEach((node, idx) => {
+                if (node === "") return;
+                const nodeData = nodes[node];
+
+                if (idx > 0) outputText += "--------------------------------------------------\n\n";
+                outputText += `Node: ${node}\n`;
+                outputText += `𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗱𝗲 ${nodeData.total} 𝗣𝗮𝗰𝗼𝘁𝗲𝘀 𝗗𝗖𝗥/𝗥𝗧𝗦\n\n`;
+                outputText += `𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗗𝗖𝗥:\n\n`;
+
+                const sortedReasons = Object.keys(nodeData.reasons).sort((a, b) => nodeData.reasons[b] - nodeData.reasons[a]);
+
+                sortedReasons.forEach(reason => {
+                    const count = nodeData.reasons[reason];
+                    const perc = ((count / nodeData.total) * 100).toFixed(2);
+                    outputText += `${count}\t${perc}%\t${reason}\n`;
+                });
+                outputText += `${nodeData.total}\t100.00%\tGrand Total\n`;
+
+                const sortedOffenders = Object.keys(nodeData.offenders).sort((a, b) => nodeData.offenders[b].total - nodeData.offenders[a].total).slice(0, 3);
+
+                sortedOffenders.forEach(offender => {
+                    const offData = nodeData.offenders[offender];
+                    outputText += `\n${offData.total}\t${offender}\n`;
+
+                    const sortedOffReasons = Object.keys(offData.reasons).sort((a, b) => offData.reasons[b].length - offData.reasons[a].length);
+
+                    sortedOffReasons.forEach(reason => {
+                        const tbrs = offData.reasons[reason];
+                        outputText += `${tbrs.length}\t${reason}\n`;
+                        tbrs.forEach(tbr => {
+                            outputText += `1\t${tbr}\n`;
+                        });
+                    });
+                });
+                
+                outputText += `\n`;
+            });
+
+            lastGeneratedText = outputText;
+            outputArea.value = outputText + MARKER_ACTION_PLAN + manualActionPlan;
+            showToast("Análise DCR gerada com sucesso!");
+
+        } catch (error) { showError(error.message || error); } 
+        finally {
+            btnGenerateDCR.disabled = false;
+            btnGenerateDCR.innerHTML = '<i class="fa-solid fa-gears"></i> Analisar DCR';
+        }
+    });
 </script>
 </body>
 </html>
