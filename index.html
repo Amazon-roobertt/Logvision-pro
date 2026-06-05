@@ -55,7 +55,6 @@
         .btn-amazon-rect:hover { background: #f58200; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn-amazon-rect:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* Estilos Novos Adicionados (Gerador Callout) */
         .btn-amazon-blue { background: #007185; color: #fff; border: 1px solid #005a6a; padding: 10px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; font-family: inherit;}
         .btn-amazon-blue:hover { background: #005a6a; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn-amazon-blue:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -77,7 +76,6 @@
         ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
-        /* Estilos Antigos Mantidos */
         .btn-ui { background: #fff; color: #232f3e; border: 1px solid #ddd; padding: 6px 12px; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 5px; transition: 0.2s; font-family: inherit; }
         .btn-ui:hover { background: #f3f3f3; border-color: #bbb; }
         .btn-ui.active { border-color: var(--amazon-orange); color: #c45500; background: #FEF8E6; }
@@ -108,6 +106,7 @@
         .stat-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; border-top: 4px solid var(--amazon-orange); text-align: center; }
         .val { font-size: 22px; font-weight: 800; display: block; }
 
+        /* RESTAURADO ESTILO ORIGINAL DAS MARCAS D'ÁGUA */
         .watermark { position: fixed; bottom: 15px; display: flex; align-items: center; gap: 8px; opacity: 0.7; pointer-events: none; z-index: 5000; transition: 0.3s; }
         .wm-right { right: 20px; }
         .wm-left { left: 20px; }
@@ -127,11 +126,11 @@
     <button class="tab-btn active" onclick="openTab('general')">General View</button>
     <button class="tab-btn" onclick="openTab('painel')">Painel de Pendências</button>
     <button class="tab-btn" onclick="openTab('mnr-tab')">MNR FC/SC & FM</button>
+    <button class="tab-btn" onclick="openTab('callout-tab')">Gerador Callout</button>
     <button class="tab-btn" onclick="openTab('ageing-tab')">Ageing System</button>
     <button class="tab-btn" onclick="openTab('autoscrub-tab')">AutoScrub Pro</button>
     <button class="tab-btn" onclick="openTab('separador')">Separador TBR</button>
     <button class="tab-btn" onclick="openTab('compilador')">Compilador</button>
-    <button class="tab-btn" onclick="openTab('callout-tab')">Gerador Callout</button>
 </nav>
 
 <div class="container">
@@ -189,6 +188,88 @@
                 <table id="m-table-fm"><thead><tr><th>Node</th><th>Count</th><th>%</th></tr></thead><tbody id="m-body-fm"></tbody></table></div>
                 <div class="mnr-header" style="background:#fff3e0; color:#e65100;">Origem MNR</div><div id="mnr-origem-container" class="origem-grid"></div>
             </div>
+        </div>
+
+        <div id="callout-tab" class="system-content">
+            <header class="internal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg">
+                <h1>Gerador de Callout <span>Last Mile / DCR</span></h1>
+            </header>
+
+            <div class="split-layout">
+                <div class="left-panel">
+                    
+                    <div id="statusMessage" class="error-box">
+                        <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+                        <span id="statusText">Erro ao processar.</span>
+                    </div>
+
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
+                        <h3 style="font-size: 14px; font-weight: 700; color: var(--amazon-blue); margin-bottom: 10px;">
+                            <i class="fa-solid fa-boxes-packing"></i> Callout (PM + SCC)
+                        </h3>
+                        <div id="co-card-pm" class="upload-view" onclick="document.getElementById('pmFile').click()">
+                            <i class="fa-solid fa-file-excel" style="font-size: 30px;"></i>
+                            <h2>Last Mlie PM</h2>
+                            <p id="co-txt-pm">Extraido do PM "Dive Deep LM"</p>
+                            <input type="file" id="pmFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+                        
+                        <div id="co-card-scc" class="upload-view" onclick="document.getElementById('sccFile').click()">
+                            <i class="fa-solid fa-file-invoice" style="font-size: 30px;"></i>
+                            <h2>2. Arquivo SCC</h2>
+                            <p id="co-txt-scc">Dive Deep LM incluindo as cidades.</p>
+                            <input type="file" id="sccFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+
+                        <button class="btn-amazon-rect w-full" id="btnGenerate" style="font-size: 14px; padding: 12px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Callout PM+SCC
+                        </button>
+                    </div>
+
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
+                        <h3 style="font-size: 14px; font-weight: 700; color: #007185; margin-bottom: 10px;">
+                            <i class="fa-solid fa-chart-pie"></i> Análise DCR (Independente)
+                        </h3>
+                        
+                        <div id="co-card-dcr" class="upload-view" style="border-color: #007185;" onclick="document.getElementById('dcrFile').click()">
+                            <i class="fa-solid fa-file-csv" style="font-size: 30px; color: #007185;"></i>
+                            <h2>3. Arquivo DCR</h2>
+                            <p id="co-txt-dcr">Relatório DCR Oficial</p>
+                            <input type="file" id="dcrFile" hidden accept=".xlsx, .xls, .csv">
+                        </div>
+
+                        <button class="btn-amazon-blue w-full" id="btnGenerateDCR" style="font-size: 14px; padding: 12px;">
+                            <i class="fa-solid fa-gears"></i> Analisar DCR
+                        </button>
+                    </div>
+
+                    <button class="btn-ui w-full" id="btnClear" onclick="clearCalloutTab()" style="justify-content: center; color: #cc0c39; border-color: #fca5a5; background: #fef2f2; font-size: 14px; padding: 12px;">
+                        <i class="fa-solid fa-trash-can"></i> Limpar Todo o Sistema
+                    </button>
+                </div>
+
+                <div class="right-panel">
+                    <div class="pivot-card" id="result-card" style="display: flex; flex-direction: column; height: 100%; margin-bottom: 0;">
+                        <div class="pivot-header">
+                            <span>Resultado do Callout</span>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-ui active" id="btnListLayout" onclick="switchLayout('list')">
+                                    <i class="fa-solid fa-list"></i> Formato: Lista
+                                </button>
+                                <button class="btn-ui" id="btnGroupLayout" onclick="switchLayout('group')">
+                                    <i class="fa-solid fa-layer-group"></i> Formato: Agrupado
+                                </button>
+                                <button class="btn-ui" onclick="copyCallout()" style="color: #232f3e;">
+                                    <i class="fa-solid fa-copy"></i> Copiar Tudo
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="outputArea" class="callout-output" placeholder="Seu callout gerado ou análise DCR aparecerá aqui... Você poderá editá-lo livremente antes de copiar."></textarea>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div id="ageing-tab" class="system-content">
@@ -252,92 +333,6 @@
             </div>
         </div>
 
-        <!-- NOVA ABA: GERADOR CALLOUT -->
-        <div id="callout-tab" class="system-content">
-            <header class="internal-header">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg">
-                <h1>Gerador de Callout <span>Last Mile / DCR</span></h1>
-            </header>
-
-            <div class="split-layout">
-                <div class="left-panel">
-                    
-                    <div id="statusMessage" class="error-box">
-                        <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
-                        <span id="statusText">Erro ao processar.</span>
-                    </div>
-
-                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
-                        <h3 style="font-size: 14px; font-weight: 700; color: var(--amazon-blue); margin-bottom: 10px;">
-                            <i class="fa-solid fa-boxes-packing"></i> Callout (PM + SCC)
-                        </h3>
-                        <div id="co-card-pm" class="upload-view" onclick="document.getElementById('pmFile').click()">
-                            <i class="fa-solid fa-file-excel" style="font-size: 30px;"></i>
-                            <h2>1. Arquivo PM</h2>
-                            <p id="co-txt-pm">Selecionar PM (tracking_id, node_id, bucket)</p>
-                            <input type="file" id="pmFile" hidden accept=".xlsx, .xls, .csv">
-                        </div>
-                        
-                        <div id="co-card-scc" class="upload-view" onclick="document.getElementById('sccFile').click()">
-                            <i class="fa-solid fa-file-invoice" style="font-size: 30px;"></i>
-                            <h2>2. Arquivo SCC</h2>
-                            <p id="co-txt-scc">Selecionar SCC (TBR, Cidade)</p>
-                            <input type="file" id="sccFile" hidden accept=".xlsx, .xls, .csv">
-                        </div>
-
-                        <button class="btn-amazon-rect w-full" id="btnGenerate" style="font-size: 14px; padding: 12px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Callout PM+SCC
-                        </button>
-                    </div>
-
-                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px;">
-                        <h3 style="font-size: 14px; font-weight: 700; color: #007185; margin-bottom: 10px;">
-                            <i class="fa-solid fa-chart-pie"></i> Análise DCR (Independente)
-                        </h3>
-                        
-                        <div id="co-card-dcr" class="upload-view" style="border-color: #007185;" onclick="document.getElementById('dcrFile').click()">
-                            <i class="fa-solid fa-file-csv" style="font-size: 30px; color: #007185;"></i>
-                            <h2>3. Arquivo DCR</h2>
-                            <p id="co-txt-dcr">Relatório DCR Oficial</p>
-                            <input type="file" id="dcrFile" hidden accept=".xlsx, .xls, .csv">
-                        </div>
-
-                        <button class="btn-amazon-blue w-full" id="btnGenerateDCR" style="font-size: 14px; padding: 12px;">
-                            <i class="fa-solid fa-gears"></i> Analisar DCR
-                        </button>
-                    </div>
-
-                    <!-- Alterado onclick para clearCalloutTab() -->
-                    <button class="btn-ui w-full" id="btnClear" onclick="clearCalloutTab()" style="justify-content: center; color: #cc0c39; border-color: #fca5a5; background: #fef2f2; font-size: 14px; padding: 12px;">
-                        <i class="fa-solid fa-trash-can"></i> Limpar Todo o Sistema
-                    </button>
-                </div>
-
-                <div class="right-panel">
-                    <div class="pivot-card" id="result-card" style="display: flex; flex-direction: column; height: 100%; margin-bottom: 0;">
-                        <div class="pivot-header">
-                            <span>Resultado do Callout</span>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn-ui active" id="btnListLayout" onclick="switchLayout('list')">
-                                    <i class="fa-solid fa-list"></i> Formato: Lista
-                                </button>
-                                <button class="btn-ui" id="btnGroupLayout" onclick="switchLayout('group')">
-                                    <i class="fa-solid fa-layer-group"></i> Formato: Agrupado
-                                </button>
-                                <!-- Alterado onclick para copyCallout() -->
-                                <button class="btn-ui" onclick="copyCallout()" style="color: #232f3e;">
-                                    <i class="fa-solid fa-copy"></i> Copiar Tudo
-                                </button>
-                            </div>
-                        </div>
-                        <textarea id="outputArea" class="callout-output" placeholder="Seu callout gerado ou análise DCR aparecerá aqui... Você poderá editá-lo livremente antes de copiar."></textarea>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- FIM NOVA ABA: GERADOR CALLOUT -->
-
     </div>
 </div>
 
@@ -347,9 +342,16 @@
 
 <script>
     function openTab(id) {
-        document.querySelectorAll('.system-content, .tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(id));
+        document.querySelectorAll('.system-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-bar .tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        const targetContent = document.getElementById(id);
+        if (targetContent) targetContent.classList.add('active');
+        
+        const activeBtn = Array.from(document.querySelectorAll('.tab-bar .tab-btn')).find(btn => {
+            const attr = btn.getAttribute('onclick');
+            return attr && attr.includes(`'${id}'`);
+        });
         if(activeBtn) activeBtn.classList.add('active');
     }
 
@@ -572,7 +574,7 @@
     function clearAgeingOnly() { age_data = []; document.getElementById('ageResDiv').style.display = 'none'; document.getElementById('btnCopyAge').style.display = 'none'; document.getElementById('btnExcelAge').style.display = 'none'; document.getElementById('fileAgeing').value = ""; document.getElementById('fileSCCAge').value = ""; document.getElementById('age-card-1').classList.remove('file-loaded'); document.getElementById('age-card-2').classList.remove('file-loaded'); document.getElementById('txt-age-1').innerText = "Selecionar Arquivo"; document.getElementById('txt-age-2').innerText = "Selecionar Arquivo"; }
     function exportAgeingToExcel() { const ws = XLSX.utils.json_to_sheet(age_data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Ageing"); XLSX.writeFile(wb, "Ageing_Amazon.xlsx"); }
 
-    // --- AUTOSCRUB (VBA FAITHFUL LOGIC) ---
+    // --- AUTOSCRUB PRO ---
     let as_draggedRow = null;
     function as_formatDateTimeBR(val) {
         if (!val || val === 'N/A') return 'N/A';
@@ -601,6 +603,7 @@
             as_processScrubData(jsonData);
         }; reader.readAsArrayBuffer(file);
     });
+
     function as_processScrubData(data) {
         const cats = { mnr: [], reversa: [], ps: [], dsl: [], lm: [], roteirizar: [], divedeep: [] };
         data.forEach(row => {
@@ -650,6 +653,7 @@
         });
         as_renderScrubGrid(cats);
     }
+
     function as_renderScrubGrid(cats) {
         const grid = document.getElementById('autoscrubGrid'); grid.innerHTML = '';
         document.getElementById('as-upload-section').style.display = 'none'; document.getElementById('as-results-section').style.display = 'block';
@@ -687,8 +691,48 @@
             grid.appendChild(card);
         });
     }
+
     function as_dragStart(e) { as_draggedRow = e.target.closest('tr'); as_draggedRow.classList.add('dragging'); }
-    function as_dropRow(e, targetId) { e.preventDefault(); if(!as_draggedRow) return; as_draggedRow.classList.remove('dragging'); document.getElementById(`as-body-${targetId}`).appendChild(as_draggedRow); as_updateCount(); }
+    
+    function as_dropRow(e, targetId) { 
+        e.preventDefault(); 
+        if(!as_draggedRow) return; 
+        as_draggedRow.classList.remove('dragging'); 
+        
+        const targetBody = document.getElementById(`as-body-${targetId}`);
+        const cellInfo = as_draggedRow.querySelectorAll('td')[3];
+        
+        if(targetId === 'mnr') {
+            cellInfo.removeAttribute('contenteditable');
+            cellInfo.style = "";
+            if (cellInfo.innerText.trim().length === 4) {
+                cellInfo.style.background = "#cc0c39";
+                cellInfo.style.color = "#fff";
+                cellInfo.style.fontWeight = "bold";
+            }
+        } else if (targetId === 'divedeep') {
+            cellInfo.setAttribute('contenteditable', 'true');
+            cellInfo.style.background = "#fffafa";
+            cellInfo.style.borderBottom = "1px dashed var(--amazon-orange)";
+            cellInfo.style.cursor = "text";
+        } else {
+            cellInfo.removeAttribute('contenteditable');
+            cellInfo.style = "";
+        }
+
+        targetBody.appendChild(as_draggedRow); 
+        
+        const rowsArray = Array.from(targetBody.children);
+        rowsArray.sort((a, b) => {
+            const valA = String(a.querySelectorAll('td')[3].innerText || "").trim();
+            const valB = String(b.querySelectorAll('td')[3].innerText || "").trim();
+            return valA.localeCompare(valB);
+        });
+        rowsArray.forEach(row => targetBody.appendChild(row));
+
+        as_updateCount(); 
+    }
+    
     function as_deleteRow(btn, id) { btn.closest('tr').remove(); as_updateCount(); }
     function as_updateCount() { ['mnr', 'reversa', 'ps', 'dsl', 'lm', 'roteirizar', 'divedeep'].forEach(id => { const b = document.getElementById(`as-body-${id}`); if(b) document.getElementById(`as-cnt-${id}`).innerText = b.children.length; }); }
 
@@ -748,7 +792,7 @@
     function as_readExcel(f) { return new Promise(res => { const r = new FileReader(); r.onload = e => res(XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type:'array'}).SheetNames[0]])); r.readAsArrayBuffer(f); }); }
     
     // ==========================================
-    // LOGICA DA NOVA ABA (CALLOUT / DCR)
+    // LOGICA DA ABA GERADOR CALLOUT
     // ==========================================
     let currentLayout = 'list'; 
     let finalDataMap = {}; 
@@ -821,6 +865,7 @@
         });
     }
 
+    // Corrigido o vazamento de escopo no construtor XLSX interno
     function readExcelFileAsAOA(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -843,7 +888,6 @@
     }
     function hideError() { statusBox.style.display = 'none'; }
 
-    // Renomeado para não conflitar
     window.clearCalloutTab = function() {
         finalDataMap = {};
         totalTbrsGlobal = 0;
@@ -857,9 +901,9 @@
         dcrFileInput.value = "";
         
         document.getElementById('co-card-pm').classList.remove('file-loaded');
-        document.getElementById('co-txt-pm').innerText = 'Selecionar PM (tracking_id, node_id, bucket)';
+        document.getElementById('co-txt-pm').innerText = 'Extraido do PM "Dive Deep LM"';
         document.getElementById('co-card-scc').classList.remove('file-loaded');
-        document.getElementById('co-txt-scc').innerText = 'Selecionar SCC (TBR, Cidade)';
+        document.getElementById('co-txt-scc').innerText = 'Dive Deep LM incluindo as cidades.';
         document.getElementById('co-card-dcr').classList.remove('file-loaded');
         document.getElementById('co-txt-dcr').innerText = 'Relatório DCR Oficial';
         
@@ -949,7 +993,6 @@
         if (Object.keys(finalDataMap).length > 0) renderOutput();
     };
 
-    // Renomeado para não conflitar
     window.copyCallout = function() {
         if (!outputArea.value) return;
         outputArea.select();
@@ -962,8 +1005,8 @@
         const pmFile = pmFileInput.files[0];
         const sccFile = sccFileInput.files[0];
 
-        if (!pmFile || !sccFile) {
-            showError("Você precisa selecionar os arquivos de PM e SCC para gerar este callout!");
+        if (!pmFile) {
+            showError("Você precisa selecionar pelo menos o arquivo de PM para gerar este callout!");
             return;
         }
 
@@ -974,25 +1017,22 @@
         
         try {
             const pmJson = await readExcelFile(pmFile);
-            const sccJson = await readExcelFile(sccFile);
-
             if (pmJson.length === 0) throw new Error("Arquivo Perfect Mile está vazio.");
-            if (sccJson.length === 0) throw new Error("Arquivo SCC está vazio.");
 
             let sccMap = {};
-            let sccTbrKeyFound = false;
-            
-            sccJson.forEach(row => {
-                const tbrKey = findKeyByAlias(row, ALIASES_TBR_SCC);
-                const cityKey = findKeyByAlias(row, ALIASES_CITY_SCC);
-                if (tbrKey && cityKey) {
-                    sccTbrKeyFound = true;
-                    const tbrVal = String(row[tbrKey]).trim().toUpperCase();
-                    if (tbrVal) sccMap[tbrVal] = String(row[cityKey]).trim();
+            if (sccFile) {
+                const sccJson = await readExcelFile(sccFile);
+                if (sccJson.length > 0) {
+                    sccJson.forEach(row => {
+                        const tbrKey = findKeyByAlias(row, ALIASES_TBR_SCC);
+                        const cityKey = findKeyByAlias(row, ALIASES_CITY_SCC);
+                        if (tbrKey && cityKey) {
+                            const tbrVal = String(row[tbrKey]).trim().toUpperCase();
+                            if (tbrVal) sccMap[tbrVal] = String(row[cityKey]).trim();
+                        }
+                    });
                 }
-            });
-
-            if (!sccTbrKeyFound) throw new Error("Não foi possível identificar 'TBR' ou 'Cidade' no SCC.");
+            }
 
             finalDataMap = {}; 
             totalTbrsGlobal = 0;
@@ -1013,7 +1053,8 @@
 
                         let bucket = String(row[bucketKey]).trim() || "Sem Motivo";
                         const node = String(row[nodeKey]).trim().toUpperCase() || "NODE DESCONHECIDO";
-                        const cidade = sccMap[tbrRaw] || "Não informada";
+                        // Mantido sem informação (em branco) caso não seja incluído arquivo SCC
+                        const cidade = sccMap[tbrRaw] || "";
 
                         const bLower = bucket.toLowerCase();
                         if (bLower.includes("not dispatched")) {
@@ -1080,12 +1121,14 @@
                     cidades.forEach(cidade => {
                         cidadesObj[cidade].forEach(tbr => {
                             const paddedTbr = (tbr + "                ").substring(0, 20);
-                            outputText += `${paddedTbr} ${cidade}${window.tbrNotes[tbr] || ""}\n`;
+                            outputText += `${paddedTbr}${cidade ? ' ' + cidade : ''}${window.tbrNotes[tbr] || ""}\n`;
                         });
                     });
                 } else {
                     cidades.forEach(cidade => {
-                        outputText += `${cidade}${window.cityNotes[cidade] || ""}\n`;
+                        if(cidade) {
+                            outputText += `${cidade}${window.cityNotes[cidade] || ""}\n`;
+                        }
                         cidadesObj[cidade].forEach(tbr => { outputText += `${tbr}${window.tbrNotes[tbr] || ""}\n`; });
                     });
                 }
@@ -1163,8 +1206,8 @@
 
                 if (idx > 0) outputText += "--------------------------------------------------\n\n";
                 outputText += `Node: ${node}\n`;
-                outputText += `𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗱𝗲 ${nodeData.total} 𝗣𝗮𝗰𝗼𝘁𝗲𝘀 𝗗𝗖𝗥/𝗥𝗧𝗦\n\n`;
-                outputText += `𝗜𝗺𝗽𝗮𝗰𝘁𝗼 𝗗𝗖𝗥:\n\n`;
+                outputText += `I𝗺𝗽𝗮𝗰𝘁𝗼 𝗱𝗲 ${nodeData.total} 𝗣𝗮𝗰𝗼𝘁𝗲𝘀 𝗗𝗖𝗥/𝗥𝗧𝗦\n\n`;
+                outputText += `I𝗺𝗽𝗮𝗰𝘁𝗼 𝗗𝗖𝗥:\n\n`;
 
                 const sortedReasons = Object.keys(nodeData.reasons).sort((a, b) => nodeData.reasons[b] - nodeData.reasons[a]);
 
