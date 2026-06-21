@@ -149,7 +149,7 @@
             <div id="gv-filter-section" style="display:none;" class="filter-section"><label style="font-size:11px; font-weight:700;">FILTRAR STATUS:</label><div class="checkbox-group" id="gv-filter-group"></div></div>
             <div id="gv-result-area" style="display: none;">
                 <div class="pivot-card"><div class="pivot-header"><span>Consolidado Operacional</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('gv-table-main', 'GeneralView')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" style="color:red" onclick="clearGeneralView()"><i class="fa-solid fa-trash-can"></i> Limpar</button><button class="btn-ui" onclick="copyTableData('gv-table-main')"><i class="fa-solid fa-copy"></i> Copiar</button></div></div>
-                <table id="gv-table-main"><thead><tr><th style="width:120px; background:#000; color:#fff;">Node</th><th style="background:#000; color:#fff;">Total EAD D-0</th><th style="background:#000; color:#fff;">Pendência de Coleta</th><th style="background:#000; color:#fff;">Potential %</th><th style="background:#000; color:#fff;">EDD Ontime %</th><th style="background:#000; color:#fff;">Total MNR</th></tr></thead><tbody id="gv-body"></tbody></table></div>
+                <table id="gv-table-main"><thead><tr><th style="width:120px; background:#000; color:#fff;">Node</th><th style="background:#000; color:#fff;">Total EAD D-0</th><th style="background:#000; color:#fff;">Pendência de Coleta</th><th style="background:#000; color:#fff;">Pacotes em Rota</th><th style="background:#000; color:#fff;">Potential %</th><th style="background:#000; color:#fff;">EDD Ontime %</th><th style="background:#000; color:#fff;">Total MNR</th></tr></thead><tbody id="gv-body"></tbody></table></div>
             </div>
         </div>
 
@@ -433,19 +433,25 @@
         const nodes = {}; const sccData = GV_RAW.scc; const sccHeaders = sccData[0];
         const idxStation = sccHeaders.findIndex(h => /station|node/i.test(h));
         const idxState = sccHeaders.findIndex(h => /state|status/i.test(h));
+        
+        // Filtros fixos estritos para pacotes em rota
+        const ROTAS_FIXAS = ["IN TRANSIT", "IN TRANSIT (DS -> CUSTOMER)", "IN TRANSIT (DS -> DS)", "IN TRANSIT (FC -> DS)"];
+
         for(let i=1; i < sccData.length; i++) {
             let row = sccData[i]; let st = String(row[idxStation] || "").trim().toUpperCase();
             let state = String(row[idxState] || "").toUpperCase().trim();
             if(!st || st === 'N/A' || st === 'NA' || st.startsWith('D') || st.startsWith('E')) continue;
-            if(!nodes[st]) nodes[st] = { ead: 0, pen: 0, pot: 0, ont: 0, mnr: 0 };
+            if(!nodes[st]) nodes[st] = { ead: 0, pen: 0, pot: 0, ont: 0, mnr: 0, em_rota: 0 };
+            
             if(GV_ACTIVE_FILTERS.includes(state)) nodes[st].pen++;
             if(STATUS_MNR_OFFICIAL.includes(state)) nodes[st].mnr++;
+            if(ROTAS_FIXAS.includes(state)) nodes[st].em_rota++;
         }
         GV_RAW.total.forEach(r => { let n = String(r[0]||"").toUpperCase(); if(nodes[n]) nodes[n].ead = parseFloat(r[1])||0; });
         GV_RAW.perf.forEach(r => { let n = String(r[0]||"").toUpperCase(); if(nodes[n]) { nodes[n].ont = parseFloat(r[1])||0; nodes[n].pot = parseFloat(r[3])||0; } });
         document.getElementById('gv-body').innerHTML = Object.keys(nodes).sort((a,b) => nodes[b].pen - nodes[a].pen).map(n => {
             const d = nodes[n];
-            return `<tr><td class="node-cell">${n}</td><td>${d.ead.toLocaleString('pt-BR')}</td><td style="background:${d.pen > 30 ? 'rgba(248,113,113,0.5)' : 'rgba(74,222,128,0.5)'}">${d.pen}</td><td>${d.pot.toFixed(2)}%</td><td>${d.ont.toFixed(2)}%</td><td>${d.mnr}</td></tr>`;
+            return `<tr><td class="node-cell">${n}</td><td>${d.ead.toLocaleString('pt-BR')}</td><td style="background:${d.pen > 30 ? 'rgba(248,113,113,0.5)' : 'rgba(74,222,128,0.5)'}">${d.pen}</td><td>${d.em_rota}</td><td>${d.pot.toFixed(2)}%</td><td>${d.ont.toFixed(2)}%</td><td>${d.mnr}</td></tr>`;
         }).join('');
         document.getElementById('gv-result-area').style.display = 'block';
     }
@@ -520,7 +526,7 @@
             const items = nodes[n].sort((a, b) => String(a["City"] || "").localeCompare(String(b["City"] || "")));
             return `<div class="pivot-card" style="height:auto;"><div class="pivot-header"><span>${n} (${nodes[n].length})</span><button onclick="copyTableData('det-${n}')" class="btn-ui">Copiar Node</button></div>
             <div style="max-height:300px; overflow:auto;"><table id="det-${n}"><thead><tr><th>Tracking ID</th><th>Rota</th><th>CEP</th><th>Cidade</th><th>Last Update</th><th>Usuario</th></tr></thead><tbody>
-            ${items.map(p => `<tr><td>${p["Tracking ID"]||""}</td><td>${p[col_p.rota]||""}</td><td>${p[col_p.cep]||""}</td><td>${p["City"]||""}</td><td>${formatExcelDate(p[col_p.update])}</td><td>${p[col_p.user]||"-"}</td></tr>`).join('')}
+            ${items.map(p => `<tr><td>${p["Tracking ID"]||""}</td><td>${p[col_p.rota]||""}</td><td>${p[col_p.cep]||""}</td><td>${p["City"]||""}</td><td>formatExcelDate(p[col_p.update])</td><td>${p[col_p.user]||"-"}</td></tr>`).join('')}
             </tbody></table></div></div>`;
         }).join('');
         document.getElementById('p-upload-view').style.display='none'; document.getElementById('p-result-view').style.display='block';
@@ -865,7 +871,6 @@
         });
     }
 
-    // Corrigido o vazamento de escopo no construtor XLSX interno
     function readExcelFileAsAOA(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1053,7 +1058,6 @@
 
                         let bucket = String(row[bucketKey]).trim() || "Sem Motivo";
                         const node = String(row[nodeKey]).trim().toUpperCase() || "NODE DESCONHECIDO";
-                        // Mantido sem informação (em branco) caso não seja incluído arquivo SCC
                         const cidade = sccMap[tbrRaw] || "";
 
                         const bLower = bucket.toLowerCase();
