@@ -28,8 +28,8 @@
         .tab-btn { background: none; border: none; color: #a7acb2; padding: 18px 25px; font-family: inherit; font-weight: 600; cursor: pointer; font-size: 14px; border-bottom: 4px solid transparent; transition: 0.3s; }
         .tab-btn.active { color: #fff; border-bottom-color: var(--amazon-orange); background: rgba(255,255,255,0.05); }
 
-        .container { max-width: 1550px; margin: 30px auto; padding: 0 20px; }
-        .canvas-container { background: #fff; border-radius: 12px; padding: 30px; min-height: 80vh; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 98vw; margin: 24px auto; padding: 0 16px; }
+        .canvas-container { background: #fff; border-radius: 12px; padding: 24px 28px; min-height: 80vh; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         header.internal-header { display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--amazon-orange); padding-bottom: 15px; margin-bottom: 25px; }
         header img { height: 45px; }
         header h1 { font-size: 26px; color: #232f3e; font-weight: 700; }
@@ -433,7 +433,7 @@
 
     // --- GENERAL VIEW ---
     let GV_RAW = { scc: null, total: null, perf: null };
-    let GV_ACTIVE_FILTERS = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS"];
+    let GV_ACTIVE_FILTERS = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS", "STOWED"];
     document.getElementById('gv-in-1').addEventListener('change', e => loadGV(e, 'scc'));
     document.getElementById('gv-in-2').addEventListener('change', e => loadGV(e, 'total'));
     document.getElementById('gv-in-3').addEventListener('change', e => loadGV(e, 'perf'));
@@ -446,7 +446,11 @@
             const map = { scc: 1, total: 2, perf: 3 };
             document.getElementById(`gv-card-${map[type]}`).classList.add('file-loaded');
             document.getElementById(`gv-txt-${map[type]}`).innerText = '✓ Carregado';
-            if(type === 'scc') initGVFilters();
+            if(type === 'scc') {
+                initGVFilters();
+                // O arquivo 1 (SCC) tambem alimenta o Painel de Pendencias e, por consequencia, a aba MNR FC/SC & FM.
+                try { processPainelWorkbook(wb); if (typeof showToast === 'function') showToast('Painel de Pendencias e MNR atualizados a partir do SCC'); } catch(err){ console.warn('Falha ao alimentar Painel a partir do SCC:', err); }
+            }
             if(GV_RAW.scc && GV_RAW.total && GV_RAW.perf) processGeneral();
         };
         reader.readAsArrayBuffer(e.target.files[0]);
@@ -510,24 +514,26 @@
     }
 
     // --- PAINEL PENDENCIAS ---
-    let p_raw = [], p_active_filters = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS"];
+    let p_raw = [], p_active_filters = ["MARKED AS MISSING", "INDUCTED", "MARKED FOR REPROCESS", "STOWED"];
     let col_p = { st: "Station", state: "State", rota: "Rota", update: "Last Update", user: "Last Scan By", cep: "Postal" };
+    function processPainelWorkbook(wb) {
+        p_raw = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval: ""});
+        if(p_raw.length > 0) {
+            const keys = Object.keys(p_raw[0]);
+            col_p.st = keys.find(k => /station|node/i.test(k)) || "Station";
+            col_p.state = keys.find(k => /state|status/i.test(k)) || "State";
+            col_p.rota = keys.find(k => /rota|route/i.test(k)) || "Rota";
+            col_p.update = keys.find(k => /update|time/i.test(k)) || "Last Update";
+            col_p.user = keys.find(k => /last scan by|usuario/i.test(k)) || "Last Scan By";
+            col_p.cep = keys.find(k => /postal|cep/i.test(k)) || "Postal";
+            initPFilters(); renderPainel();
+        }
+    }
     document.getElementById('input-p').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = (ex) => {
-            const arrayBuffer = ex.target.result;
-            const wb = XLSX.read(new Uint8Array(arrayBuffer), {type:'array'});
-            p_raw = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval: ""});
-            if(p_raw.length > 0) {
-                const keys = Object.keys(p_raw[0]);
-                col_p.st = keys.find(k => /station|node/i.test(k)) || "Station";
-                col_p.state = keys.find(k => /state|status/i.test(k)) || "State";
-                col_p.rota = keys.find(k => /rota|route/i.test(k)) || "Rota";
-                col_p.update = keys.find(k => /update|time/i.test(k)) || "Last Update";
-                col_p.user = keys.find(k => /last scan by|usuario/i.test(k)) || "Last Scan By";
-                col_p.cep = keys.find(k => /postal|cep/i.test(k)) || "Postal";
-                initPFilters(); renderPainel();
-            }
+            const wb = XLSX.read(new Uint8Array(ex.target.result), {type:'array'});
+            processPainelWorkbook(wb);
         };
         reader.readAsArrayBuffer(e.target.files[0]);
     });
