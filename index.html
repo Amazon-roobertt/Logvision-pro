@@ -188,8 +188,6 @@
                 <div class="pivot-card"><div class="pivot-header"><span>Resumo Consolidado</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('p-consolidated-table', 'Resumo_Painel')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" style="color:red" onclick="clearPainelOnly()"><i class="fa-solid fa-trash-can"></i> Limpar</button><button class="btn-ui" onclick="copyTableData('p-consolidated-table')"><i class="fa-solid fa-copy"></i> Copiar</button></div></div>
                 <table id="p-consolidated-table"><thead><tr><th>Node</th><th>QTD</th><th>%</th></tr></thead><tbody id="p-pivot-body"></tbody></table></div>
                 <div id="p-details-area"></div>
-                <div class="mnr-header" style="background:#fff3e0; color:#e65100; padding:10px 15px; border-radius:8px; margin:25px 0 10px; font-weight:700;">Pendência de Coleta por Rota</div>
-                <div id="p-rota-container" class="origem-grid"></div>
             </div>
         </div>
 
@@ -576,13 +574,13 @@
         document.getElementById('p-stat-date').innerText = new Date().toLocaleDateString();
         document.getElementById('p-details-area').innerHTML = sortedKeys.map(n => {
             const items = nodes[n].sort((a, b) => String(a["City"] || "").localeCompare(String(b["City"] || "")));
-            return `<div class="pivot-card" style="height:auto;"><div class="pivot-header"><span>${n} (${nodes[n].length})</span><button onclick="copyTableData('det-${n}')" class="btn-ui">Copiar Node</button></div>
+            const rc = {}; nodes[n].forEach(r => { const _rt = String(r[col_p.rota]||"").trim().toUpperCase() || "S/ ROTA"; rc[_rt] = (rc[_rt]||0)+1; }); const sortedRotas = Object.keys(rc).sort((a,b)=>rc[b]-rc[a]);
+            return `<div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap; margin-bottom:30px;"><div class="pivot-card" style="flex:1 1 380px; min-width:0; height:auto; margin-bottom:0;"><div class="pivot-header"><span>${n} (${nodes[n].length})</span><button onclick="copyTableData('det-${n}')" class="btn-ui">Copiar Node</button></div>
             <div style="max-height:300px; overflow:auto;"><table id="det-${n}"><thead><tr><th>Tracking ID</th><th>Rota</th><th>CEP</th><th>Cidade</th><th>Last Update</th><th>Usuario</th></tr></thead><tbody>
             ${items.map(p => `<tr><td>${p["Tracking ID"]||""}</td><td>${p[col_p.rota]||""}</td><td>${p[col_p.cep]||""}</td><td>${p["City"]||""}</td><td>${formatExcelDate(p[col_p.update])}</td><td>${p[col_p.user]||"-"}</td></tr>`).join('')}
-            </tbody></table></div></div>`;
+            </tbody></table></div></div><div class="origem-card" style="flex:0 0 300px;"><div class="pivot-header"><h4>${n} (${nodes[n].length})</h4><button class="btn-ui" onclick="copyTableData('tbl-rota-${n}')">Copiar</button></div><table id="tbl-rota-${n}"><thead><tr><th>Rota</th><th>QTD</th></tr></thead><tbody>${sortedRotas.map(rt => `<tr><td>${rt}</td><td>${rc[rt]}</td></tr>`).join('')}</tbody></table></div></div>`;
         }).join('');
         document.getElementById('p-upload-view').style.display='none'; document.getElementById('p-result-view').style.display='block';
-        renderPainelRotas(filtered);
         renderMNR();
     }
 
