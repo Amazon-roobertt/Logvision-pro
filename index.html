@@ -90,7 +90,7 @@
 
         .as-handle { cursor: grab; color: #aaa; padding: 0 10px; font-size: 16px; }
         .as-row-delete { color: #cc0c39; cursor: pointer; font-size: 14px; background: none; border: none; transition: 0.2s; }
-        .autoscrub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-top: 20px; }
+        .autoscrub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(354px, 1fr)); gap: 20px; margin-top: 20px; }
         .as-card { display: flex; flex-direction: column; height: 500px; }
         .as-wrapper { flex-grow: 1; overflow-y: auto; background: #fff; }
         tr.dragging { opacity: 0.4; background: #FEF8E6; }
@@ -185,6 +185,8 @@
                 <div class="pivot-card"><div class="pivot-header"><span>Resumo Consolidado</span><div style="display:flex; gap:8px;"><button class="btn-ui" onclick="takeScreenshot('p-consolidated-table', 'Resumo_Painel')"><i class="fa-solid fa-camera"></i> Print</button><button class="btn-ui" style="color:red" onclick="clearPainelOnly()"><i class="fa-solid fa-trash-can"></i> Limpar</button><button class="btn-ui" onclick="copyTableData('p-consolidated-table')"><i class="fa-solid fa-copy"></i> Copiar</button></div></div>
                 <table id="p-consolidated-table"><thead><tr><th>Node</th><th>QTD</th><th>%</th></tr></thead><tbody id="p-pivot-body"></tbody></table></div>
                 <div id="p-details-area"></div>
+                <div class="mnr-header" style="background:#fff3e0; color:#e65100; padding:10px 15px; border-radius:8px; margin:25px 0 10px; font-weight:700;">Pendência de Coleta por Rota</div>
+                <div id="p-rota-container" class="origem-grid"></div>
             </div>
         </div>
 
@@ -577,7 +579,24 @@
             </tbody></table></div></div>`;
         }).join('');
         document.getElementById('p-upload-view').style.display='none'; document.getElementById('p-result-view').style.display='block';
+        renderPainelRotas(filtered);
         renderMNR();
+    }
+
+    function renderPainelRotas(filtered) {
+        const container = document.getElementById('p-rota-container');
+        if(!container) return;
+        const byNode = {};
+        filtered.forEach(r => {
+            const n = String(r[col_p.st] || "N/A").trim().toUpperCase();
+            const rota = String(r[col_p.rota] || "").trim().toUpperCase() || "S/ ROTA";
+            if(!byNode[n]) byNode[n] = { rotas: {}, total: 0 };
+            byNode[n].rotas[rota] = (byNode[n].rotas[rota] || 0) + 1; byNode[n].total++;
+        });
+        container.innerHTML = Object.keys(byNode).sort((a,b) => byNode[b].total - byNode[a].total).map(n => {
+            const d = byNode[n]; const sortedRotas = Object.keys(d.rotas).sort((a,b) => d.rotas[b] - d.rotas[a]);
+            return `<div class="origem-card"><div class="pivot-header"><h4>${n} (${d.total})</h4><button class="btn-ui" onclick="copyTableData('tbl-rota-${n}')">Copiar</button></div><table id="tbl-rota-${n}"><thead><tr><th>Rota</th><th>QTD</th></tr></thead><tbody>${sortedRotas.map(rt => `<tr><td>${rt}</td><td>${d.rotas[rt]}</td></tr>`).join('')}</tbody></table></div>`;
+        }).join('');
     }
 
     function renderMNR() {
