@@ -59,7 +59,8 @@
   a.link .tx span{display:block; font-size:12px; color:var(--muted); margin-top:2px}
   a.link .arw{color:var(--amber); font-size:20px; font-weight:700}
   .foot{margin-top:26px; font-size:13.5px; color:var(--muted); line-height:1.6}
-  .foot .alias{color:var(--amber); font-weight:700}
+  .foot .alias{color:var(--amber); font-weight:700; text-decoration:none}
+  .foot .alias:hover{text-decoration:underline}
   @media (max-width:520px){ .card{padding:34px 22px 28px} h1{font-size:22px} }
 </style>
 </head>
@@ -83,10 +84,10 @@
     </svg>
 
     <span class="badge">Aviso importante</span>
-    <h1>Este site foi descontinuado por segurança de dados</h1>
+    <h1>Este site foi descontinuado</h1>
     <p class="lead">
-      As ferramentas do <strong>LogiVision Pro</strong> foram migradas para dentro do
-      <strong>Amazon Quick</strong>, em ambiente corporativo seguro.
+      A ferramenta do <strong>LogiVision Pro</strong> foi migrada para dentro do
+      <strong>Amazon Quick</strong>.
     </p>
     <p class="lead">Acesse as versões novas pelos links abaixo:</p>
 
@@ -113,7 +114,7 @@
 
     <p class="foot">
       Todos os sites estão funcionando normalmente.<br>
-      Qualquer dúvida, pode me acionar — alias: <span class="alias">roobertt</span>
+      Qualquer dúvida, pode me acionar — alias: <a class="alias" href="https://amazon.enterprise.slack.com/team/U0A18LQ8Q1W" target="_blank" rel="noopener">roobertt</a>
     </p>
   </main>
 
